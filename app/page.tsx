@@ -126,13 +126,13 @@ export default function Home() {
         <a href="mailto:1294172722@qq.com">建立连接 <Mail size={15} /></a>
       </header>
 
-      {!seated && <>
-        <section className="welcome-copy">
-          <p><Sparkles size={13} /> WELCOME TO MY DIGITAL ROOM</p>
-          <h1>门已打开，<br /><em>正在为你转向。</em></h1>
-          <span>镜头将自动落座，并从右侧第一面墙开始探索。</span>
-        </section>
-      </>}
+      <section className={`identity-story ${!seated ? "identity-intro" : active === "about" ? "identity-left" : "identity-dock"}`}>
+        <p><Sparkles size={13} /> WELCOME · AI PRODUCT & DATA OPERATIONS</p>
+        <h1>孙晨曦</h1>
+        <h3>AI 产品与数据运营</h3>
+        <span>把复杂规则、数据生产与模型能力，转化为可落地、可评估的业务结果。</span>
+        <div><b>约 2 年 AI 项目经验</b><b>影视与多模态背景</b><b>ENTJ</b></div>
+      </section>
 
       {seated && <nav className="wall-map" aria-label="切换房间墙面">
         {zones.map((zone) => <button key={zone.id} className={zone.id === active ? "active" : ""} onClick={() => enterZone(zone.id)}><span>{zone.no}</span>{zone.short}</button>)}
