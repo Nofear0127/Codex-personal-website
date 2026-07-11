@@ -144,6 +144,7 @@ export default function Home() {
 
       {seated && active === "about" && <section className="profile-detail-panel glass-panel">
         <p className="panel-eyebrow">01 / PROFILE</p><h2>从理解模型，<br />到推动产品落地</h2>
+        <h3 className="panel-subhead">用可验证的方式，把能力落成产品。</h3>
         <p>我曾先后在智谱 AI、阿里巴巴参与 AI 产品实践，并在淘天担任 AI 产品经理，主导“购物车对比推荐”功能上线。</p>
         <p>我关注的不只是产品功能，也包括模型选型、Prompt、Context Engineering、RAG、Agent、效果评测与推理成本。</p>
         <blockquote>AI 产品的价值不在于使用了多少复杂技术，而在于能否以合理的成本，稳定地解决真实问题。</blockquote>
@@ -151,21 +152,21 @@ export default function Home() {
       </section>}
 
       {seated && active === "lab" && <section className={`writing-layout glass-panel ${article ? "article-open" : ""}`}>
-        <div className="writing-intro"><p className="panel-eyebrow">02 / WRITING</p><h2>在快速变化中，<br />建立长期判断</h2><p>从 2025 年 1 月开始，我持续记录对 AI 行业、技术演进和产品落地的观察。我不希望只复述新闻，而是尝试回答：新技术解决了什么、改变了哪些产品可能性、距离真实落地还有多远？</p></div>
+        <div className="writing-intro"><p className="panel-eyebrow">02 / WRITING</p><h2>在快速变化中，<br />建立长期判断</h2><h3 className="panel-subhead">不追逐热词，持续建立对技术与产品的长期判断。</h3><p>从 2025 年 1 月开始，我持续记录对 AI 行业、技术演进和产品落地的观察。我不希望只复述新闻，而是尝试回答：新技术解决了什么、改变了哪些产品可能性、距离真实落地还有多远？</p></div>
         <div className="writing-index"><h3>{article ? selectedCategory : "文章分类"}</h3>{article ? filteredArticles.map((item) => <button key={item.id} className={item.id === selectedArticle ? "active" : ""} onClick={() => setSelectedArticle(item.id)}>{item.no} {item.title}</button>) : ["AI行业观察", "AI技术解读", "AI产品方法", "项目与实践"].map((category) => <button key={category} className={category === selectedCategory ? "active" : ""} onClick={() => { setSelectedCategory(category); setSelectedArticle(null); }}>{category}<ArrowRight size={14} /></button>)}</div>
         <div className="writing-main">{article ? <><p className="panel-eyebrow">{article.category} / ARTICLE</p><h2>{article.title}</h2><p className="article-lead">{article.detail}</p><ol>{article.sections.map((section) => <li key={section}>{section}</li>)}</ol><a className="primary-action" href="mailto:1294172722@qq.com">阅读全文 <ArrowRight size={16} /></a></> : <><h3>{selectedCategory}</h3>{filteredArticles.length ? filteredArticles.map((item) => <button className="article-row" key={item.id} onClick={() => setSelectedArticle(item.id)}><b>{item.no}</b><span>{item.title}<small>{item.summary}</small></span><ArrowRight /></button>) : <div className="empty-category">该分类文章正在整理中，欢迎稍后回来。</div>}</>}</div>
       </section>}
 
       {seated && active === "projects" && <section className="project-layout glass-panel">
-        <div className="project-belief"><p className="panel-eyebrow">03 / PROJECT</p><h2>Demo 证明模型可以做到，<br />落地证明产品值得被做。</h2><p>AI 项目的价值不在于使用了多少技术，而在于能否以可控的成本，稳定地解决真实问题。</p></div>
+        <div className="project-belief"><p className="panel-eyebrow">03 / PROJECT</p><h2>Demo 证明模型可以做到，<br />落地证明产品值得被做。</h2><h3 className="panel-subhead">让 AI 在真实消费决策中创造可验证的价值。</h3><p>AI 项目的价值不在于使用了多少技术，而在于能否以可控的成本，稳定地解决真实问题。</p></div>
         <div className="project-name"><span>FEATURED PROJECT</span><h2>淘天购物车<br />对比推荐</h2><p>AI × 电商 × 消费决策</p><div><b>我的角色</b>AI 产品经理／项目主导者<br /><b>项目状态</b>已上线</div></div>
-        <div className="project-summary"><h3>项目简介</h3><p>用户面对多个相似商品时，需要反复查看和比较信息，决策成本较高。</p><p>购物车对比推荐利用 AI 提取商品差异、组织比较维度并生成推荐解释，帮助用户更高效地完成购买决策。</p></div>
-        <div className="project-details"><h3>项目明细</h3><ul><li>分析用户比较与决策需求</li><li>设计 AI 对比推荐产品方案</li><li>定义模型输入、输出与效果标准</li><li>协同算法、研发和设计团队</li><li>处理异常、降级与兜底场景</li><li>推动产品完成上线验证</li></ul><blockquote>AI 不替用户做决定，而是帮助用户更低成本地完成判断。</blockquote></div>
+        <div className="project-summary"><h3 className="section-label">项目简介</h3><p>用户面对多个相似商品时，需要反复查看和比较信息，决策成本较高。</p><p>购物车对比推荐利用 AI 提取商品差异、组织比较维度并生成推荐解释，帮助用户更高效地完成购买决策。</p></div>
+        <div className="project-details"><h3 className="section-label">项目明细</h3><ol><li>分析用户比较与决策需求</li><li>设计 AI 对比推荐产品方案</li><li>定义模型输入、输出与效果标准</li><li>协同算法、研发和设计团队</li><li>处理异常、降级与兜底场景</li><li>推动产品完成上线验证</li></ol><blockquote>AI 不替用户做决定，而是帮助用户更低成本地完成判断。</blockquote></div>
       </section>}
 
       {seated && active === "contact" && <section className="method-contact-layout glass-panel">
-        <div><p className="panel-eyebrow">04 / METHODOLOGY</p><h2>最小充分 AI</h2><h3>只为可验证的价值，增加技术复杂度。</h3><ul><li>从真实业务问题出发，而不是从模型出发</li><li>能用简单方案解决，就不引入复杂架构</li><li>根据任务选择 Prompt、RAG、Workflow、Agent 或 SFT</li><li>同时评估效果、成本、延迟与稳定性</li><li>通过评测、校验、降级和人工介入管理不确定性</li></ul><blockquote>我追求的不是最低成本，而是单位成本下最大的业务价值。</blockquote></div>
-        <div className="contact-side"><p className="panel-eyebrow">LET'S CONNECT</p><h2>与我联系</h2><h3>期待一起做真正落地的 AI 产品。</h3><p>我正在关注 AI 产品经理、AI 解决方案及大模型应用相关机会，也欢迎交流 AI 产品、技术落地与行业趋势。</p><dl><dt>邮箱</dt><dd>1294172722@qq.com</dd><dt>求职状态</dt><dd>开放 AI 产品相关机会</dd></dl><div className="panel-actions"><a href="mailto:1294172722@qq.com">发送邮件</a><a href="#">下载简历</a><a href="mailto:1294172722@qq.com">添加微信</a></div><small>在实践中验证，在写作中形成判断。 © 2026 雾崎</small></div>
+        <div><p className="panel-eyebrow">04 / METHODOLOGY</p><h2>最小充分 AI</h2><h3 className="panel-subhead">只为可验证的价值，增加技术复杂度。</h3><ul><li>从真实业务问题出发，而不是从模型出发</li><li>能用简单方案解决，就不引入复杂架构</li><li>根据任务选择 Prompt、RAG、Workflow、Agent 或 SFT</li><li>同时评估效果、成本、延迟与稳定性</li><li>通过评测、校验、降级和人工介入管理不确定性</li></ul><blockquote>我追求的不是最低成本，而是单位成本下最大的业务价值。</blockquote></div>
+        <div className="contact-side"><p className="secondary-eyebrow"><Sparkles size={12} /> TECHNICAL AI PRODUCT MANAGER</p><h2>与我联系</h2><h3 className="panel-subhead">期待一起做真正落地的 AI 产品。</h3><p>我正在关注 AI 产品经理、AI 解决方案及大模型应用相关机会，也欢迎交流 AI 产品、技术落地与行业趋势。</p><dl><dt>邮箱</dt><dd>1294172722@qq.com</dd><dt>求职状态</dt><dd>开放 AI 产品相关机会</dd></dl><div className="panel-actions"><a href="mailto:1294172722@qq.com">发送邮件</a><a href="#">下载简历</a><a href="mailto:1294172722@qq.com">添加微信</a></div><small>在实践中验证，在写作中形成判断。 © 2026 雾崎</small></div>
       </section>}
 
       <div className="chair-loader" aria-live="polite">
