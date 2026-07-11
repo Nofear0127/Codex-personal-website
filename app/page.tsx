@@ -12,7 +12,7 @@ const zones = [
   { id: "lab" as const, no: "03", label: "LAB.SYS", short: "SKILLS & CONTACT", eyebrow: "RIGHT WALL / SKILLS & CONTACT", title: "保持实验，保持在线。一起制造一点没见过的东西。", copy: "React、TypeScript、WebGL、动效与生成式 AI 是我的常用工具。如果你有一个大胆的想法，右侧频道随时开放。", tags: ["REACT / NEXT", "WEBGL / MOTION", "HELLO@STUDIO.DEV"], icon: Cpu },
 ];
 
-const faceRotation: Record<ZoneId, number> = { about: 120, projects: 0, lab: -120 };
+const faceRotation: Record<ZoneId, number> = { about: -90, projects: 0, lab: 90 };
 
 export default function Home() {
   const [doorOpen, setDoorOpen] = useState(false);
@@ -45,17 +45,23 @@ export default function Home() {
       return candidate;
     });
     setActive(id);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 2850));
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 3150));
   }, [active, phase, seated]);
 
   const navigate = useCallback((direction: number) => {
     if (!seated || !active || phase !== "idle") return;
     const index = zones.findIndex((zone) => zone.id === active);
     const next = (index + direction + zones.length) % zones.length;
+    const nextId = zones[next].id;
     setPhase("turning");
-    setRotation((current) => current - direction * 120);
-    setActive(zones[next].id);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 2850));
+    setRotation((current) => {
+      let candidate = faceRotation[nextId];
+      while (candidate - current > 180) candidate -= 360;
+      while (candidate - current < -180) candidate += 360;
+      return candidate;
+    });
+    setActive(nextId);
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 3150));
   }, [active, phase, seated]);
 
   useEffect(() => {
@@ -79,6 +85,8 @@ export default function Home() {
           <div className="room-face face-projects"><div className="face-image" /></div>
           <div className="room-face face-lab"><div className="face-image" /></div>
           <div className="room-face face-about"><div className="face-image" /></div>
+          <div className="room-plane room-ceiling" />
+          <div className="room-plane room-floor" />
         </div>
         <div className="seated-vignette" /><div className="speed-lines" />
       </div>
