@@ -21,6 +21,8 @@ export default function Home() {
   const [active, setActive] = useState<ZoneId | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [rotation, setRotation] = useState(0);
+  const [previous, setPrevious] = useState<ZoneId | null>(null);
+  const [turnDirection, setTurnDirection] = useState<1 | -1>(1);
   const timers = useRef<number[]>([]);
   const autoStarted = useRef(false);
 
@@ -46,6 +48,13 @@ export default function Home() {
     }
     if (id === active) return;
     const target = faceRotation[id];
+    const fromIndex = zones.findIndex((zone) => zone.id === active);
+    const toIndex = zones.findIndex((zone) => zone.id === id);
+    let delta = toIndex - fromIndex;
+    if (delta > 2) delta -= zones.length;
+    if (delta < -2) delta += zones.length;
+    setPrevious(active);
+    setTurnDirection(delta >= 0 ? 1 : -1);
     setPhase("turning");
     setRotation((current) => {
       let candidate = target;
@@ -54,7 +63,7 @@ export default function Home() {
       return candidate;
     });
     setActive(id);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 2850));
+    timers.current.push(window.setTimeout(() => { setPhase("idle"); setPrevious(null); }, 2850));
   }, [active, phase, seated]);
 
   const navigate = useCallback((direction: number) => {
@@ -62,6 +71,8 @@ export default function Home() {
     const index = zones.findIndex((zone) => zone.id === active);
     const next = (index + direction + zones.length) % zones.length;
     const nextId = zones[next].id;
+    setPrevious(active);
+    setTurnDirection(direction >= 0 ? 1 : -1);
     setPhase("turning");
     setRotation((current) => {
       let candidate = faceRotation[nextId];
@@ -70,7 +81,7 @@ export default function Home() {
       return candidate;
     });
     setActive(nextId);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 2850));
+    timers.current.push(window.setTimeout(() => { setPhase("idle"); setPrevious(null); }, 2850));
   }, [active, phase, seated]);
 
   useEffect(() => {
@@ -84,17 +95,18 @@ export default function Home() {
   }, [navigate, phase, seated]);
 
   const current = zones.find((zone) => zone.id === active);
+  const faceClass = (id: ZoneId) => `room-face face-${id} ${active === id ? "is-current" : ""} ${previous === id ? "is-previous" : ""}`;
 
   return (
-    <main className={`experience ${doorOpen ? "door-open" : "door-closed"} ${seated ? "is-seated" : "is-standing"} ${active ? `active-${active}` : ""} phase-${phase}`}>
+    <main className={`experience ${doorOpen ? "door-open" : "door-closed"} ${seated ? "is-seated" : "is-standing"} ${active ? `active-${active}` : ""} ${turnDirection > 0 ? "turn-forward" : "turn-reverse"} phase-${phase}`}>
       <div className="standing-room" aria-hidden="true"><div className="standing-photo" /><div className="standing-shade" /></div>
 
       <div className="room-viewport" aria-hidden="true">
         <div className="room-ring" style={{ "--room-turn": `${rotation}deg` } as React.CSSProperties}>
-          <div className="room-face face-projects"><div className="face-image" /></div>
-          <div className="room-face face-lab"><div className="face-image" /></div>
-          <div className="room-face face-about"><div className="face-image" /></div>
-          <div className="room-face face-contact"><div className="face-image" /></div>
+          <div className={faceClass("projects")}><div className="face-image" /></div>
+          <div className={faceClass("lab")}><div className="face-image" /></div>
+          <div className={faceClass("about")}><div className="face-image" /></div>
+          <div className={faceClass("contact")}><div className="face-image" /></div>
           <div className="room-plane room-ceiling" />
           <div className="room-plane room-floor" />
         </div>
