@@ -15,6 +15,16 @@ const zones = [
 ];
 
 const faceRotation: Record<ZoneId, number> = { about: 90, projects: 0, lab: -90, contact: -180 };
+const projectItems = [
+  { id: "deepwiki", no: "01", title: "淘天商品库 · DeepWiki", meta: "业务运营 PM · 2025.07—2026.03", summary: "承接算法与方案需求，负责规则拆解、数据流转、质量管理与规模化交付。", metrics: ["50+ 项目", "300 万+ 数据", "98% 合格率"], detail: "围绕信息质量判断、信息理解、同款聚合、标签增强与知识生成五步流程，将原始商品数据转化为结构化知识数据；独立承接 30+ 需求并主导 20+ 项目规则 SOP。" },
+  { id: "quality", no: "02", title: "规模化质量与交付体系", meta: "流程优化 · 质量管理", summary: "建立培训、FAQ、错误归因与验收机制，让团队规模扩大时仍保持质量稳定。", metrics: ["人效 +30%", "培训 -70%", "节省 50 万+"], detail: "统筹 POC、HRO 与 5 家以上供应商网络，通过分层质量控制、规则培训和数据流转提速，提升整体交付效率并将机制横向复用。" },
+  { id: "zhipu", no: "03", title: "智谱清言 · 图片美学", meta: "数据质检组长 · 2024.12—2025.07", summary: "围绕动画、设计与艺术图像完成标注、质检、规则迭代和分层抽检。", metrics: ["1 万+ 质检", "97.5% 准确率", "团队 Top 1"], detail: "从专业标注进入质量评估与团队协作，持续沉淀 Badcase、Goodcase 和高频错误清单，并优化抽检策略与每周质量分析。" },
+];
+const articleItems = [
+  { id: "benefit", no: "01", title: "从 AI 热到 AI 效益", meta: "AI 产品 · 商业落地", summary: "模型能力最终需要回到可验证的用户价值与业务收益。", detail: "文章从能力展示、产品采用、成本与组织协同四个层面，讨论企业如何跨过 AI Demo 与真实效益之间的鸿沟。", sections: ["为什么 Demo 不等于产品", "从采用率到结果指标", "成本、风险与组织协同"] },
+  { id: "multi-agent", no: "02", title: "单 Agent 到 Multi-Agent", meta: "Agent · 系统协作", summary: "从任务边界、协作结构和结果责任理解多智能体系统。", detail: "文章分析单 Agent 的能力边界、Multi-Agent 的分工价值，以及何时复杂编排反而会增加成本和不确定性。", sections: ["单 Agent 的能力边界", "多智能体如何分工", "编排成本与结果负责"] },
+  { id: "pm-model", no: "03", title: "AI 产品经理不要只盯模型", meta: "产品方法 · 评测", summary: "先定义真实问题与成功标准，再讨论模型和工程方案。", detail: "文章强调产品经理需要同时关注数据、评测、用户反馈、延迟、成本和合规，把模型能力放进完整产品闭环。", sections: ["先定义用户问题", "轻量评测驱动迭代", "把风险写进产品方案"] },
+];
 
 export default function Home() {
   const [doorOpen, setDoorOpen] = useState(false);
@@ -24,21 +34,17 @@ export default function Home() {
   const [rotation, setRotation] = useState(0);
   const [previous, setPrevious] = useState<ZoneId | null>(null);
   const [turnDirection, setTurnDirection] = useState<1 | -1>(1);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<string | null>(null);
   const timers = useRef<number[]>([]);
-  const autoStarted = useRef(false);
 
   const clearTimers = () => { timers.current.forEach(window.clearTimeout); timers.current = []; };
-  useEffect(() => { const timer = window.setTimeout(() => setDoorOpen(true), 2350); return () => { window.clearTimeout(timer); clearTimers(); }; }, []);
-  useEffect(() => {
-    if (!doorOpen || autoStarted.current) return;
-    autoStarted.current = true;
-    timers.current.push(window.setTimeout(() => { setActive("about"); setRotation(90); setPhase("seating"); }, 1700));
-    timers.current.push(window.setTimeout(() => setSeated(true), 2750));
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 3650));
-  }, [doorOpen]);
+  useEffect(() => () => clearTimers(), []);
 
   const enterZone = useCallback((id: ZoneId) => {
     if (phase !== "idle") return;
+    if (id === "projects" && active !== "projects") setSelectedProject(null);
+    if (id === "lab" && active !== "lab") setSelectedArticle(null);
     if (!seated) {
       setActive(id);
       setRotation(faceRotation[id]);
@@ -64,7 +70,7 @@ export default function Home() {
       return candidate;
     });
     setActive(id);
-    timers.current.push(window.setTimeout(() => { setPhase("idle"); setPrevious(null); }, 2850));
+    timers.current.push(window.setTimeout(() => { setPhase("idle"); setPrevious(null); }, 2200));
   }, [active, phase, seated]);
 
   const navigate = useCallback((direction: number) => {
@@ -72,6 +78,8 @@ export default function Home() {
     const index = zones.findIndex((zone) => zone.id === active);
     const next = (index + direction + zones.length) % zones.length;
     const nextId = zones[next].id;
+    if (nextId === "projects") setSelectedProject(null);
+    if (nextId === "lab") setSelectedArticle(null);
     setPrevious(active);
     setTurnDirection(direction >= 0 ? 1 : -1);
     setPhase("turning");
@@ -82,7 +90,7 @@ export default function Home() {
       return candidate;
     });
     setActive(nextId);
-    timers.current.push(window.setTimeout(() => { setPhase("idle"); setPrevious(null); }, 2850));
+    timers.current.push(window.setTimeout(() => { setPhase("idle"); setPrevious(null); }, 2200));
   }, [active, phase, seated]);
 
   useEffect(() => {
@@ -96,6 +104,8 @@ export default function Home() {
   }, [navigate, phase, seated]);
 
   const current = zones.find((zone) => zone.id === active);
+  const project = projectItems.find((item) => item.id === selectedProject);
+  const article = articleItems.find((item) => item.id === selectedArticle);
   const faceClass = (id: ZoneId) => `room-face face-${id} ${active === id ? "is-current" : ""} ${previous === id ? "is-previous" : ""}`;
 
   return (
@@ -132,24 +142,24 @@ export default function Home() {
         <h3>AI 产品与数据运营</h3>
         <span>把复杂规则、数据生产与模型能力，转化为可落地、可评估的业务结果。</span>
         <div><b>约 2 年 AI 项目经验</b><b>影视与多模态背景</b><b>ENTJ</b></div>
+        {!seated && doorOpen && <button className="identity-enter" onClick={() => enterZone("about")}>进入我的工作室 <ArrowRight size={16} /></button>}
       </section>
 
       {seated && <nav className="wall-map" aria-label="切换房间墙面">
         {zones.map((zone) => <button key={zone.id} className={zone.id === active ? "active" : ""} onClick={() => enterZone(zone.id)}><span>{zone.no}</span>{zone.short}</button>)}
       </nav>}
 
-      {seated && current && <section key={active} className="content-panel">
-        <p className="panel-eyebrow">{current.eyebrow}</p><h2>{current.title}</h2><p className="panel-copy">{current.copy}</p>
+      {seated && current && <section key={active} className={`content-panel ${project || article ? "is-detail" : "is-list"}`}>
+        <p className="panel-eyebrow">{current.eyebrow}</p><h2>{project?.title || article?.title || current.title}</h2><p className="panel-copy">{project?.summary || article?.summary || current.copy}</p>
         <div className="panel-tags">{current.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-        {current.id === "projects" ? <div className="projects">
-          <article><b>01</b><span>淘天商品库 · DeepWiki<small>50+ 项目 · 300 万+ 数据 · 98% 平均合格率</small></span><ArrowRight size={17} /></article>
-          <article><b>02</b><span>规模化质量与交付体系<small>人效提升 30% · 培训周期缩短 70%</small></span><ArrowRight size={17} /></article>
-          <article><b>03</b><span>智谱清言 · 图片美学<small>1 万+ 图片质检 · 标注准确率 97.5%</small></span><ArrowRight size={17} /></article>
-        </div> : current.id === "lab" ? <div className="projects article-list">
-          <article><b>01</b><span>从 AI 热到 AI 效益<small>产品价值与落地方法</small></span><ArrowRight size={17} /></article>
-          <article><b>02</b><span>单 Agent 到 Multi-Agent<small>Agent 系统与协作边界</small></span><ArrowRight size={17} /></article>
-          <article><b>03</b><span>AI 产品经理不要只盯模型<small>业务、评测与产品闭环</small></span><ArrowRight size={17} /></article>
-        </div> : <div className="panel-actions"><a href="mailto:1294172722@qq.com">{current.id === "about" ? "获取完整简历" : "发送邮件"}<ArrowRight size={15} /></a><a href="mailto:1294172722@qq.com" aria-label="Email"><Mail size={18} /></a></div>}
+        {current.id === "projects" ? project ? <div className="detail-preview">
+          <button className="detail-back" onClick={() => setSelectedProject(null)}><ArrowLeft size={15} /> 返回项目列表</button><p className="detail-meta">{project.meta}</p><p>{project.detail}</p><div className="detail-metrics">{project.metrics.map((metric) => <b key={metric}>{metric}</b>)}</div>
+        </div> : <div className="projects">{projectItems.map((item) => <button key={item.id} onClick={() => setSelectedProject(item.id)}><b>{item.no}</b><span>{item.title}<small>{item.summary}</small></span><ArrowRight size={17} /></button>)}</div>
+        : current.id === "lab" ? article ? <div className="detail-preview article-preview">
+          <button className="detail-back" onClick={() => setSelectedArticle(null)}><ArrowLeft size={15} /> 返回文章列表</button><p className="detail-meta">{article.meta}</p><p>{article.detail}</p><ol>{article.sections.map((section) => <li key={section}>{section}</li>)}</ol><a className="read-more" href="mailto:1294172722@qq.com">阅读全文 <ArrowRight size={15} /></a>
+        </div> : <div className="projects article-list">{articleItems.map((item) => <button key={item.id} onClick={() => setSelectedArticle(item.id)}><b>{item.no}</b><span>{item.title}<small>{item.meta} · {item.summary}</small></span><ArrowRight size={17} /></button>)}</div>
+        : current.id === "contact" ? <div className="contact-content"><div className="contact-capabilities"><span>我能带来的价值</span><b>复杂需求拆解</b><b>数据与质量体系</b><b>跨团队规模化交付</b></div><div className="contact-facts"><p><small>目标方向</small>AI 产品 / 智能应用 / 数据业务</p><p><small>当前状态</small>已离职 · 随时到岗</p><p><small>教育背景</small>西安工业大学 · 本科</p></div><div className="panel-actions"><a href="mailto:1294172722@qq.com">发送邮件 <ArrowRight size={15} /></a><a href="mailto:1294172722@qq.com" aria-label="Email"><Mail size={18} /></a></div></div>
+        : <div className="about-detail"><p><b>AI 项目经验</b>覆盖业务运营 PM、数据质量与规模化交付。</p><p><b>多模态背景</b>影视从业经历带来对图片、视频与视听语言的长期理解。</p><p><b>工作方式</b>先定义问题与成功标准，再建立可复用的规则和反馈闭环。</p><div className="panel-actions"><a href="mailto:1294172722@qq.com">获取完整简历 <ArrowRight size={15} /></a></div></div>}
       </section>}
 
       <div className="chair-loader" aria-live="polite">
