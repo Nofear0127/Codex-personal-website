@@ -54,7 +54,7 @@ export default function Home() {
       return candidate;
     });
     setActive(id);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 3750));
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 2850));
   }, [active, phase, seated]);
 
   const navigate = useCallback((direction: number) => {
@@ -70,7 +70,7 @@ export default function Home() {
       return candidate;
     });
     setActive(nextId);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 3750));
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 2850));
   }, [active, phase, seated]);
 
   useEffect(() => {
