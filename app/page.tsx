@@ -16,10 +16,42 @@ const zones = [
 
 const faceRotation: Record<ZoneId, number> = { about: 90, lab: 0, projects: -90, contact: -180 };
 const articleItems = [
-  { id: "benefit", category: "AI行业观察", no: "01", title: "从 AI 热到 AI 效益", meta: "AI 行业观察", summary: "模型能力最终需要回到可验证的用户价值与业务收益。", detail: "文章从能力展示、产品采用、成本与组织协同四个层面，讨论企业如何跨过 AI Demo 与真实效益之间的鸿沟。", sections: ["为什么 Demo 不等于产品", "从采用率到结果指标", "成本、风险与组织协同"] },
-  { id: "multi-agent", category: "AI技术解读", no: "02", title: "单 Agent 到 Multi-Agent", meta: "AI 技术解读", summary: "从任务边界、协作结构和结果责任理解多智能体系统。", detail: "文章分析单 Agent 的能力边界、Multi-Agent 的分工价值，以及何时复杂编排反而会增加成本和不确定性。", sections: ["单 Agent 的能力边界", "多智能体如何分工", "编排成本与结果负责"] },
-  { id: "pm-model", category: "AI产品方法", no: "03", title: "AI 产品经理不要只盯模型", meta: "AI 产品方法", summary: "先定义真实问题与成功标准，再讨论模型和工程方案。", detail: "文章强调产品经理需要同时关注数据、评测、用户反馈、延迟、成本和合规，把模型能力放进完整产品闭环。", sections: ["先定义用户问题", "轻量评测驱动迭代", "把风险写进产品方案"] },
+  { id:"01", category:"AI产品方法", no:"01", title:"如何转型 AI 产品经理？DeepSeek 给你答案", file:"01-DeepSeek与AI产品经理转型.md", summary:"从产品经理视角，讨论 AI 时代的能力转型与实践路径。" },
+  { id:"02", category:"AI技术解读", no:"02", title:"深度拆解：DeepSeek-R1 是怎么训练的", file:"02-DeepSeek-R1训练原理.md", summary:"从强化学习、冷启动与蒸馏理解 R1 的训练逻辑。" },
+  { id:"03", category:"AI技术解读", no:"03", title:"深度理解 Manus AI Agent", file:"03-深度理解Manus-Agent.md", summary:"从应用、技术实现与趋势系统理解 Manus。" },
+  { id:"04", category:"AI技术解读", no:"04", title:"一文讲清楚 Agent、MCP、Function Call", file:"04-Agent-MCP-FunctionCall.md", summary:"拆解三个核心概念的定义、区别与连接方式。" },
+  { id:"05", category:"AI技术解读", no:"05", title:"GPT-4o 多模态生图：6 种好玩又提效的用法", file:"05-GPT4o多模态生图.md", summary:"从真实体验理解多模态生成的产品可能性。" },
+  { id:"06", category:"AI技术解读", no:"06", title:"MCP + A2A + Reasoning Model = Future", file:"06-MCP-A2A-ReasoningModel.md", summary:"记忆、协作与决策如何构成多 Agent 的技术基础。" },
+  { id:"07", category:"AI行业观察", no:"07", title:"2025 AI 元年？当前到底什么 Agent 能用？", file:"07-2025什么Agent能用.md", summary:"观察通用与垂直 Agent 的真实成熟度。" },
+  { id:"08", category:"AI产品方法", no:"08", title:"AI 产品经理不要只盯着模型", file:"08-AI产品经理不要只盯模型.md", summary:"从模型迷思回到任务设计与业务适配。" },
+  { id:"09", category:"AI产品方法", no:"09", title:"做 Agent 应用：从平台到工具、再到为结果负责", file:"09-Agent从平台到结果负责.md", summary:"关于 Agent 产品形态与结果责任的阶段性反思。" },
+  { id:"10", category:"AI产品方法", no:"10", title:"从单 Agent 到 Multi-Agent 的演进之路", file:"10-单Agent到MultiAgent.md", summary:"分析多智能体协作的业务价值与迭代逻辑。" },
+  { id:"11", category:"AI产品方法", no:"11", title:"从 AI 热到 AI 效益", file:"11-从AI热到AI效益.md", summary:"产品经理必备的 AI 场景评估实战指南。" },
+  { id:"12", category:"AI行业观察", no:"12", title:"OpenClaw 终结 Agent 战争？", file:"12-OpenClaw正向观点.md", summary:"从正向视角观察 OpenClaw 的产品价值。" },
+  { id:"13", category:"AI行业观察", no:"13", title:"别被全网爆火的 OpenClaw 骗了", file:"13-别被OpenClaw骗了.md", summary:"面向普通用户的实测、风险与适用性判断。" },
+  { id:"14", category:"AI行业观察", no:"14", title:"我还没找到 OpenClaw 的应用场景", file:"14-OpenClaw没有应用场景.md", summary:"技术狂欢与真实工作流之间为什么仍有断层。" },
+  { id:"15", category:"项目与实践", no:"15", title:"OpenClaw 自主进化日记 01", file:"15-OpenClaw-Skill失控复盘.md", summary:"Skill 失控与 Self-Evolving 实战复盘。" },
+  { id:"16", category:"AI行业观察", no:"16", title:"我卸载了 OpenClaw，但智谱和 Kimi 却赢麻了", file:"16-我卸载了OpenClaw.md", summary:"从产品成败重新观察国产模型的机会。" },
+  { id:"17", category:"AI行业观察", no:"17", title:"Claude Code 你就作吧，我换 Codex 了", file:"17-Claude-Code与Codex对比.md", summary:"从真实体验比较两款 AI 编程产品。" },
+  { id:"18", category:"项目与实践", no:"18", title:"从听不懂到完全信任：我的 Codex 深度体验", file:"18-Codex深度产品体验.md", summary:"一次关于完整性、稳定性与安全感的产品复盘。" },
+  { id:"19", category:"AI产品方法", no:"19", title:"AI 时代的产品经理：工作流被重写了", file:"19-AI产品经理工作流被重写.md", summary:"从 PRD 到原型，产品验证方式正在发生变化。" },
+  { id:"20", category:"AI行业观察", no:"20", title:"长任务是检验 Agent 水平的唯一标准", file:"20-长任务检验Agent水平.md", summary:"长任务能力如何区分 Agent 是玩具还是工具。" },
 ];
+
+function MarkdownPreview({ content }: { content: string }) {
+  return <div className="markdown-preview">{content.split("\n").map((line, index) => {
+    const key = `${index}-${line.slice(0, 12)}`;
+    if (!line.trim()) return <span className="md-space" key={key} />;
+    if (line.startsWith("#### ")) return <h4 key={key}>{line.slice(5)}</h4>;
+    if (line.startsWith("### ")) return <h3 key={key}>{line.slice(4)}</h3>;
+    if (line.startsWith("## ")) return <h2 key={key}>{line.slice(3)}</h2>;
+    if (line.startsWith("# ")) return null;
+    if (line.startsWith("> ")) return <blockquote key={key}>{line.slice(2)}</blockquote>;
+    if (/^[-*] /.test(line)) return <div className="md-list" key={key}><i />{line.slice(2)}</div>;
+    if (/^\d+[.、] /.test(line)) return <div className="md-list" key={key}><b>{line.match(/^\d+/)?.[0]}</b>{line.replace(/^\d+[.、] /, "")}</div>;
+    return <p key={key}>{line}</p>;
+  })}</div>;
+}
 
 export default function Home() {
   const [doorOpen, setDoorOpen] = useState(false);
@@ -31,6 +63,7 @@ export default function Home() {
   const [turnDirection, setTurnDirection] = useState<1 | -1>(1);
   const [selectedCategory, setSelectedCategory] = useState("AI行业观察");
   const [selectedArticle, setSelectedArticle] = useState<string | null>(null);
+  const [articleContent, setArticleContent] = useState("");
   const timers = useRef<number[]>([]);
 
   const clearTimers = () => { timers.current.forEach(window.clearTimeout); timers.current = []; };
@@ -101,6 +134,11 @@ export default function Home() {
   const filteredArticles = articleItems.filter((item) => item.category === selectedCategory);
   const faceClass = (id: ZoneId) => `room-face face-${id} ${active === id ? "is-current" : ""} ${previous === id ? "is-previous" : ""}`;
 
+  useEffect(() => {
+    if (!article) { setArticleContent(""); return; }
+    fetch(`/articles/${encodeURIComponent(article.file)}`).then((response) => response.text()).then(setArticleContent).catch(() => setArticleContent("文章读取失败，请稍后重试。"));
+  }, [article]);
+
   return (
     <main className={`experience ${doorOpen ? "door-open" : "door-closed"} ${seated ? "is-seated" : "is-standing"} ${active ? `active-${active}` : ""} ${turnDirection > 0 ? "turn-forward" : "turn-reverse"} phase-${phase}`}>
       <div className="standing-room" aria-hidden="true"><div className="standing-photo" /><div className="standing-shade" /></div>
@@ -119,18 +157,19 @@ export default function Home() {
 
       <div className="door door-left"><span /></div><div className="door door-right"><span /></div>
       <div className="intro-copy">
-        <div><Terminal size={17} /> NF_ROOM</div><p>OPENING SECURE WORKSPACE</p><i />
+        <div><Terminal size={17} /> WUQI_ROOM</div><p>OPENING WUQI WORKSPACE</p><i />
         <button onClick={() => setDoorOpen(true)}>点击开门 / ENTER</button>
       </div>
 
       <header className="top-hud">
-        <button className="brand" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><b />孙晨曦<small>AI PRODUCT · DATA OPERATIONS</small></button>
+        <button className="brand" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><b />雾崎<small>AI PRODUCT · DATA OPERATIONS</small></button>
         <div className="online"><Radio size={12} /> SYSTEM ONLINE</div>
         <a href="mailto:1294172722@qq.com">建立连接 <Mail size={15} /></a>
       </header>
 
-      <section className={`identity-story ${!seated ? "identity-intro" : active === "about" ? "identity-left" : "identity-dock"}`}>
+      <section className={`identity-story ${!seated ? "identity-intro" : active === "about" ? "identity-left profile-identity" : "identity-dock"}`}>
         <p><Sparkles size={13} /> TECHNICAL AI PRODUCT MANAGER</p>
+        {seated && active === "about" && <div className="profile-robot" aria-label="黑色机械机器人"><i className="robot-eye" /><i className="robot-body" /><i className="robot-foot left" /><i className="robot-foot right" /></div>}
         <h1>{!seated ? "技术型 AI 产品经理" : "你好，我是雾崎"}</h1>
         <h3>{!seated ? "把模型能力，转化为真实的产品价值。" : "智谱 AI × 阿里巴巴 × 淘天"}</h3>
         <span>{!seated ? "拥有 3 年一线大厂 AI 产品实践经历。我关注 AI 技术与业务之间的连接，擅长以更低的技术复杂度和成本，推动 AI 产品高效落地。" : active === "about" ? "技术型 AI 产品经理，拥有 2 年 AI 产品实习和 1 年全职工作经历。用刚好足够的技术方案，实现最大的业务价值。" : "技术型 AI 产品经理 · 把模型能力转化为真实产品价值"}</span>
@@ -154,7 +193,7 @@ export default function Home() {
       {seated && active === "lab" && <section className={`writing-layout glass-panel ${article ? "article-open" : ""}`}>
         <div className="writing-intro"><p className="panel-eyebrow">02 / WRITING</p><h2>在快速变化中，<br />建立长期判断</h2><h3 className="panel-subhead">不追逐热词，持续建立对技术与产品的长期判断。</h3><p>从 2025 年 1 月开始，我持续记录对 AI 行业、技术演进和产品落地的观察。我不希望只复述新闻，而是尝试回答：新技术解决了什么、改变了哪些产品可能性、距离真实落地还有多远？</p></div>
         <div className="writing-index"><h3>{article ? selectedCategory : "文章分类"}</h3>{article ? filteredArticles.map((item) => <button key={item.id} className={item.id === selectedArticle ? "active" : ""} onClick={() => setSelectedArticle(item.id)}>{item.no} {item.title}</button>) : ["AI行业观察", "AI技术解读", "AI产品方法", "项目与实践"].map((category) => <button key={category} className={category === selectedCategory ? "active" : ""} onClick={() => { setSelectedCategory(category); setSelectedArticle(null); }}>{category}<ArrowRight size={14} /></button>)}</div>
-        <div className="writing-main">{article ? <><p className="panel-eyebrow">{article.category} / ARTICLE</p><h2>{article.title}</h2><p className="article-lead">{article.detail}</p><ol>{article.sections.map((section) => <li key={section}>{section}</li>)}</ol><a className="primary-action" href="mailto:1294172722@qq.com">阅读全文 <ArrowRight size={16} /></a></> : <><h3>{selectedCategory}</h3>{filteredArticles.length ? filteredArticles.map((item) => <button className="article-row" key={item.id} onClick={() => setSelectedArticle(item.id)}><b>{item.no}</b><span>{item.title}<small>{item.summary}</small></span><ArrowRight /></button>) : <div className="empty-category">该分类文章正在整理中，欢迎稍后回来。</div>}</>}</div>
+        <div className="writing-main">{article ? <><p className="panel-eyebrow">{article.category} / ARTICLE</p><h2>{article.title}</h2>{articleContent ? <MarkdownPreview content={articleContent} /> : <p className="article-loading">正在打开文章…</p>}</> : <><h3>{selectedCategory}</h3>{filteredArticles.length ? filteredArticles.map((item) => <button className="article-row" key={item.id} onClick={() => setSelectedArticle(item.id)}><b>{item.no}</b><span>{item.title}<small>{item.summary}</small></span><ArrowRight /></button>) : <div className="empty-category">该分类文章正在整理中，欢迎稍后回来。</div>}</>}</div>
       </section>}
 
       {seated && active === "projects" && <section className="project-layout glass-panel">
