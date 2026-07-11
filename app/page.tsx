@@ -45,7 +45,7 @@ export default function Home() {
       return candidate;
     });
     setActive(id);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 1500));
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 2850));
   }, [active, phase, seated]);
 
   const navigate = useCallback((direction: number) => {
@@ -55,7 +55,7 @@ export default function Home() {
     setPhase("turning");
     setRotation((current) => current - direction * 120);
     setActive(zones[next].id);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 1500));
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 2850));
   }, [active, phase, seated]);
 
   useEffect(() => {
