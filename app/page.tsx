@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Armchair, ArrowLeft, ArrowRight, Braces, Cpu, Mail, Radio, Sparkles, Terminal, UserRound, X } from "lucide-react";
+import MouseCompanion from "./MouseCompanion";
 
 type ZoneId = "about" | "projects" | "lab" | "contact";
 type Phase = "idle" | "seating" | "turning";
@@ -162,6 +163,7 @@ export default function Home() {
         <button onClick={() => navigate(1)} aria-label="下一面墙"><ArrowRight size={18} /></button>
       </div>}
       {seated && <button className="stand-up" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><X size={14} /> 离开座位</button>}
+      <MouseCompanion />
       <div className="grain" />
     </main>
   );
