@@ -1,16 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Armchair, ArrowLeft, ArrowRight, Braces, Cpu, Github, Mail, Radio, Sparkles, Terminal, UserRound, X } from "lucide-react";
+import { Armchair, ArrowLeft, ArrowRight, Braces, Cpu, Mail, Radio, Sparkles, Terminal, UserRound, X } from "lucide-react";
 
 type ZoneId = "about" | "projects" | "lab" | "contact";
 type Phase = "idle" | "seating" | "turning";
 
 const zones = [
-  { id: "about" as const, no: "01", label: "ABOUT.EXE", short: "IDENTITY", eyebrow: "RIGHT WALL / IDENTITY", title: "在代码与想象力的交界处，构建有生命力的数字体验。", copy: "你好，我是一名创意开发者。我把产品思维、视觉叙事与前端工程组合起来，让每一次点击都像进入一个新世界。", tags: ["06+ YEARS", "SHANGHAI / REMOTE", "AVAILABLE 2026"], icon: UserRound },
-  { id: "projects" as const, no: "02", label: "PROJECTS.LOG", short: "SELECTED WORK", eyebrow: "FRONT WALL / SELECTED WORK", title: "不是作品列表，而是三次值得进入的任务现场。", copy: "从品牌官网到 AI 产品原型，每个项目都由一个明确的问题开始，最终落到可感知、可使用、可增长的体验。", tags: ["AI PRODUCT", "IMMERSIVE WEB", "DESIGN SYSTEM"], icon: Braces },
-  { id: "lab" as const, no: "03", label: "LAB.SYS", short: "AI LAB", eyebrow: "LEFT WALL / AI PRODUCT LAB", title: "让产品思考、视觉实验与 AI 能力在这里发生连接。", copy: "这里记录原型、工作流与持续迭代的实验。技术是材料，体验和真实问题才是产品的起点。", tags: ["AI PROTOTYPE", "PRODUCT DESIGN", "EXPERIMENTS"], icon: Cpu },
-  { id: "contact" as const, no: "04", label: "CONNECT.SYS", short: "CONTACT", eyebrow: "BACK WALL / CONNECT", title: "转到房间的最后一面，也许是我们合作的第一步。", copy: "如果你正在构建一个值得认真对待的 AI 产品，欢迎带着问题、想法或一张不完整的草图来找我。", tags: ["OPEN TO COLLAB", "AI PRODUCT", "HELLO@STUDIO.DEV"], icon: Sparkles },
+  { id: "about" as const, no: "01", label: "ABOUT.EXE", short: "孙晨曦", eyebrow: "RIGHT WALL / PROFILE", title: "AI 产品与数据运营，从复杂规则走向可落地的业务结果。", copy: "我是孙晨曦，拥有约两年 AI 相关项目经验，经历覆盖业务运营 PM、数据质量与规模化交付。影视行业背景让我对图片、视频与多模态产品保持长期敏感。", tags: ["AI 产品 / 数据运营", "西安工业大学 · 本科", "ENTJ"], icon: UserRound },
+  { id: "projects" as const, no: "02", label: "PROJECTS.LOG", short: "项目经历", eyebrow: "FRONT WALL / EXPERIENCE", title: "把 AI 数据项目做成可管理、可评估、可规模化的交付系统。", copy: "从需求拆解、规则 SOP、数据流转到质量验收与供应商协同，我关注的不只是完成项目，更是建立可以持续复用的机制。", tags: ["淘天集团 · DEEPWIKI", "智谱清言 · 图片美学", "知识库 / 训练集 / 评测集"], icon: Braces },
+  { id: "lab" as const, no: "03", label: "LAB.SYS", short: "AI 思考", eyebrow: "LEFT WALL / WRITING & TOOLS", title: "持续追踪 Agent、模型能力与 AI 产品落地方法。", copy: "我通过写作拆解 AI 产品经理转型、Agent、MCP、多模态与 FDE 等议题，也使用 Coze、Cursor、Photoshop 搭建工作流、知识库和效率工具。", tags: ["AGENT / MCP", "COZE / CURSOR", "多模态 / FDE"], icon: Cpu },
+  { id: "contact" as const, no: "04", label: "CONNECT.SYS", short: "联系我", eyebrow: "BACK WALL / CONNECT", title: "寻找 AI 产品、智能应用与数据业务方向的新机会。", copy: "我擅长在算法、业务、数据团队和供应商之间建立共识，把模糊需求转化为规则、流程和可验证的交付结果。目前已离职，可随时到岗。", tags: ["随时到岗", "AI 产品 / 智能应用", "1294172722@QQ.COM"], icon: Sparkles },
 ];
 
 const faceRotation: Record<ZoneId, number> = { about: 90, projects: 0, lab: -90, contact: -180 };
@@ -108,9 +108,9 @@ export default function Home() {
       </div>
 
       <header className="top-hud">
-        <button className="brand" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><b />NO FEAR<small>CREATIVE DEVELOPER</small></button>
+        <button className="brand" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><b />孙晨曦<small>AI PRODUCT · DATA OPERATIONS</small></button>
         <div className="online"><Radio size={12} /> SYSTEM ONLINE</div>
-        <a href="mailto:hello@studio.dev">建立连接 <Mail size={15} /></a>
+        <a href="mailto:1294172722@qq.com">建立连接 <Mail size={15} /></a>
       </header>
 
       {!seated && <>
@@ -129,10 +129,14 @@ export default function Home() {
         <p className="panel-eyebrow">{current.eyebrow}</p><h2>{current.title}</h2><p className="panel-copy">{current.copy}</p>
         <div className="panel-tags">{current.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
         {current.id === "projects" ? <div className="projects">
-          <article><b>01</b><span>NEURAL INTERFACE<small>AI PRODUCT / 2026</small></span><ArrowRight size={17} /></article>
-          <article><b>02</b><span>VOID ARCHIVE<small>IMMERSIVE WEB / 2025</small></span><ArrowRight size={17} /></article>
-          <article><b>03</b><span>ORBIT OS<small>DESIGN SYSTEM / 2025</small></span><ArrowRight size={17} /></article>
-        </div> : <div className="panel-actions"><a href="mailto:hello@studio.dev">{current.id === "about" ? "查看完整履历" : "一起做点酷的"}<ArrowRight size={15} /></a><a href="https://github.com" aria-label="GitHub"><Github size={18} /></a></div>}
+          <article><b>01</b><span>淘天商品库 · DeepWiki<small>50+ 项目 · 300 万+ 数据 · 98% 平均合格率</small></span><ArrowRight size={17} /></article>
+          <article><b>02</b><span>规模化质量与交付体系<small>人效提升 30% · 培训周期缩短 70%</small></span><ArrowRight size={17} /></article>
+          <article><b>03</b><span>智谱清言 · 图片美学<small>1 万+ 图片质检 · 标注准确率 97.5%</small></span><ArrowRight size={17} /></article>
+        </div> : current.id === "lab" ? <div className="projects article-list">
+          <article><b>01</b><span>从 AI 热到 AI 效益<small>产品价值与落地方法</small></span><ArrowRight size={17} /></article>
+          <article><b>02</b><span>单 Agent 到 Multi-Agent<small>Agent 系统与协作边界</small></span><ArrowRight size={17} /></article>
+          <article><b>03</b><span>AI 产品经理不要只盯模型<small>业务、评测与产品闭环</small></span><ArrowRight size={17} /></article>
+        </div> : <div className="panel-actions"><a href="mailto:1294172722@qq.com">{current.id === "about" ? "获取完整简历" : "发送邮件"}<ArrowRight size={15} /></a><a href="mailto:1294172722@qq.com" aria-label="Email"><Mail size={18} /></a></div>}
       </section>}
 
       <div className="chair-loader" aria-live="polite">

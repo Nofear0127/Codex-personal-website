@@ -2,22 +2,22 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "NO FEAR — Creative Developer",
-  description: "走进一间属于创意开发者的数字工作室，探索项目、能力与实验。",
+  title: "孙晨曦 — AI 产品与数据运营",
+  description: "孙晨曦的个人网站：AI 产品、数据运营、项目经历与行业思考。",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
   openGraph: {
-    title: "NO FEAR — Creative Developer",
-    description: "走进一间属于创意开发者的数字工作室。",
-    images: [{ url: "/assets/codex-room.png", width: 1672, height: 939, alt: "NO FEAR 数字工作室" }],
+    title: "孙晨曦 — AI 产品与数据运营",
+    description: "AI 产品、数据运营、项目经历与行业思考。",
+    images: [{ url: "/assets/room-v2-front.png", width: 1672, height: 939, alt: "孙晨曦的 AI 产品工作室" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NO FEAR — Creative Developer",
-    description: "走进一间属于创意开发者的数字工作室。",
-    images: ["/assets/codex-room.png"],
+    title: "孙晨曦 — AI 产品与数据运营",
+    description: "AI 产品、数据运营、项目经历与行业思考。",
+    images: ["/assets/room-v2-front.png"],
   },
 };
 
