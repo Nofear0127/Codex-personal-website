@@ -1,182 +1,141 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Braces,
-  ChevronDown,
-  Code2,
-  Cpu,
-  Github,
-  Mail,
-  MousePointer2,
-  Radio,
-  RotateCcw,
-  Sparkles,
-  Terminal,
-  UserRound,
-  X,
-} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Armchair, ArrowLeft, ArrowRight, Braces, Cpu, Github, Mail, Radio, Sparkles, Terminal, UserRound, X } from "lucide-react";
 
 type ZoneId = "about" | "projects" | "lab";
+type Phase = "idle" | "seating" | "turning";
 
 const zones = [
-  {
-    id: "about" as const,
-    no: "01",
-    label: "ABOUT.EXE",
-    eyebrow: "LEFT WING / IDENTITY",
-    title: "在代码与想象力的交界处，构建有生命力的数字体验。",
-    copy: "你好，我是一名创意开发者。我把产品思维、视觉叙事与前端工程组合起来，让每一次点击都像进入一个新世界。",
-    stats: ["06+ YEARS", "SHANGHAI / REMOTE", "AVAILABLE 2026"],
-    icon: UserRound,
-  },
-  {
-    id: "projects" as const,
-    no: "02",
-    label: "PROJECTS.LOG",
-    eyebrow: "CENTER DECK / SELECTED WORK",
-    title: "不是作品列表，而是三次值得进入的任务现场。",
-    copy: "从品牌官网到 AI 产品原型，每个项目都由一个明确的问题开始，最终落到可感知、可使用、可增长的体验。",
-    stats: ["AI PRODUCT", "IMMERSIVE WEB", "DESIGN SYSTEM"],
-    icon: Braces,
-  },
-  {
-    id: "lab" as const,
-    no: "03",
-    label: "LAB.SYS",
-    eyebrow: "RIGHT BAY / SKILLS & CONTACT",
-    title: "保持实验，保持在线。一起制造一点没见过的东西。",
-    copy: "React、TypeScript、WebGL、动效与生成式 AI 是我的常用工具。如果你有一个大胆的想法，右侧频道随时开放。",
-    stats: ["REACT / NEXT", "WEBGL / MOTION", "HELLO@STUDIO.DEV"],
-    icon: Cpu,
-  },
+  { id: "about" as const, no: "01", label: "ABOUT.EXE", short: "IDENTITY", eyebrow: "LEFT WALL / IDENTITY", title: "在代码与想象力的交界处，构建有生命力的数字体验。", copy: "你好，我是一名创意开发者。我把产品思维、视觉叙事与前端工程组合起来，让每一次点击都像进入一个新世界。", tags: ["06+ YEARS", "SHANGHAI / REMOTE", "AVAILABLE 2026"], icon: UserRound },
+  { id: "projects" as const, no: "02", label: "PROJECTS.LOG", short: "SELECTED WORK", eyebrow: "FRONT WALL / SELECTED WORK", title: "不是作品列表，而是三次值得进入的任务现场。", copy: "从品牌官网到 AI 产品原型，每个项目都由一个明确的问题开始，最终落到可感知、可使用、可增长的体验。", tags: ["AI PRODUCT", "IMMERSIVE WEB", "DESIGN SYSTEM"], icon: Braces },
+  { id: "lab" as const, no: "03", label: "LAB.SYS", short: "SKILLS & CONTACT", eyebrow: "RIGHT WALL / SKILLS & CONTACT", title: "保持实验，保持在线。一起制造一点没见过的东西。", copy: "React、TypeScript、WebGL、动效与生成式 AI 是我的常用工具。如果你有一个大胆的想法，右侧频道随时开放。", tags: ["REACT / NEXT", "WEBGL / MOTION", "HELLO@STUDIO.DEV"], icon: Cpu },
 ];
 
-export default function Home() {
-  const [entered, setEntered] = useState(false);
-  const [active, setActive] = useState<ZoneId | null>(null);
-  const [transitioning, setTransitioning] = useState(false);
-  const [parallax, setParallax] = useState({ x: 0, y: 0 });
-  const activeIndex = zones.findIndex((zone) => zone.id === active);
-  const current = useMemo(() => zones.find((zone) => zone.id === active), [active]);
+const faceRotation: Record<ZoneId, number> = { about: 120, projects: 0, lab: -120 };
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => setEntered(true), 2600);
-    return () => window.clearTimeout(timer);
-  }, []);
+export default function Home() {
+  const [doorOpen, setDoorOpen] = useState(false);
+  const [seated, setSeated] = useState(false);
+  const [active, setActive] = useState<ZoneId | null>(null);
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [rotation, setRotation] = useState(0);
+  const timers = useRef<number[]>([]);
+
+  const clearTimers = () => { timers.current.forEach(window.clearTimeout); timers.current = []; };
+  useEffect(() => { const timer = window.setTimeout(() => setDoorOpen(true), 2350); return () => { window.clearTimeout(timer); clearTimers(); }; }, []);
+
+  const enterZone = useCallback((id: ZoneId) => {
+    if (phase !== "idle") return;
+    if (!seated) {
+      setActive(id);
+      setRotation(faceRotation[id]);
+      setPhase("seating");
+      timers.current.push(window.setTimeout(() => setSeated(true), 1050));
+      timers.current.push(window.setTimeout(() => setPhase("idle"), 1950));
+      return;
+    }
+    if (id === active) return;
+    const target = faceRotation[id];
+    setPhase("turning");
+    setRotation((current) => {
+      let candidate = target;
+      while (candidate - current > 180) candidate -= 360;
+      while (candidate - current < -180) candidate += 360;
+      return candidate;
+    });
+    setActive(id);
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 1500));
+  }, [active, phase, seated]);
+
+  const navigate = useCallback((direction: number) => {
+    if (!seated || !active || phase !== "idle") return;
+    const index = zones.findIndex((zone) => zone.id === active);
+    const next = (index + direction + zones.length) % zones.length;
+    setPhase("turning");
+    setRotation((current) => current - direction * 120);
+    setActive(zones[next].id);
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 1500));
+  }, [active, phase, seated]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setActive(null);
       if (event.key === "ArrowLeft") navigate(-1);
       if (event.key === "ArrowRight") navigate(1);
+      if (event.key === "Escape" && seated && phase === "idle") { setSeated(false); setActive(null); setRotation(0); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
+  }, [navigate, phase, seated]);
 
-  function selectZone(id: ZoneId) {
-    if (id === active || transitioning) return;
-    setTransitioning(true);
-    setActive(id);
-    window.setTimeout(() => setTransitioning(false), 900);
-  }
-
-  function navigate(direction: number) {
-    if (!entered || transitioning) return;
-    const next = active === null ? (direction > 0 ? 0 : zones.length - 1) : (activeIndex + direction + zones.length) % zones.length;
-    selectZone(zones[next].id);
-  }
+  const current = zones.find((zone) => zone.id === active);
 
   return (
-    <main
-      className={`experience ${entered ? "is-entered" : "is-intro"} ${active ? `view-${active}` : "view-room"} ${transitioning ? "is-turning" : ""}`}
-      onMouseMove={(event) => {
-        if (window.innerWidth < 768) return;
-        setParallax({ x: event.clientX / window.innerWidth - 0.5, y: event.clientY / window.innerHeight - 0.5 });
-      }}
-    >
-      <div className="room-stage" style={{ "--mx": parallax.x, "--my": parallax.y } as React.CSSProperties} aria-hidden="true">
-        <div className="room-image" />
-        <div className="room-vignette" />
-        <div className="scanlines" />
+    <main className={`experience ${doorOpen ? "door-open" : "door-closed"} ${seated ? "is-seated" : "is-standing"} ${active ? `active-${active}` : ""} phase-${phase}`}>
+      <div className="standing-room" aria-hidden="true"><div className="standing-photo" /><div className="standing-shade" /></div>
+
+      <div className="room-viewport" aria-hidden="true">
+        <div className="room-ring" style={{ "--room-turn": `${rotation}deg` } as React.CSSProperties}>
+          <div className="room-face face-projects"><div className="face-image" /></div>
+          <div className="room-face face-lab"><div className="face-image" /></div>
+          <div className="room-face face-about"><div className="face-image" /></div>
+        </div>
+        <div className="seated-vignette" /><div className="speed-lines" />
       </div>
 
-      <div className="door door-left" aria-hidden="true"><span /></div>
-      <div className="door door-right" aria-hidden="true"><span /></div>
-      <div className="intro-copy" aria-live="polite">
-        <div className="intro-mark"><Terminal size={17} /> NF_OS</div>
-        <p>INITIALIZING CREATIVE WORKSPACE</p>
-        <div className="loader"><i /></div>
-        <button onClick={() => setEntered(true)}>点击进入 / ENTER</button>
+      <div className="door door-left"><span /></div><div className="door door-right"><span /></div>
+      <div className="intro-copy">
+        <div><Terminal size={17} /> NF_ROOM</div><p>OPENING SECURE WORKSPACE</p><i />
+        <button onClick={() => setDoorOpen(true)}>点击开门 / ENTER</button>
       </div>
 
-      <header className="hud top-hud">
-        <button className="brand" onClick={() => setActive(null)} aria-label="返回房间主视图">
-          <span className="brand-dot" />
-          <span>NO FEAR<small>CREATIVE DEVELOPER</small></span>
-        </button>
-        <div className="system-status"><Radio size={13} /> SYSTEM ONLINE <span>•</span> 20:26:07</div>
-        <a className="contact-link" href="mailto:hello@studio.dev">建立连接 <Mail size={15} /></a>
+      <header className="top-hud">
+        <button className="brand" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><b />NO FEAR<small>CREATIVE DEVELOPER</small></button>
+        <div className="online"><Radio size={12} /> SYSTEM ONLINE</div>
+        <a href="mailto:hello@studio.dev">建立连接 <Mail size={15} /></a>
       </header>
 
-      <section className={`room-copy ${active ? "is-hidden" : ""}`} aria-label="房间导航">
-        <p className="kicker"><Sparkles size={14} /> WELCOME TO MY DIGITAL ROOM</p>
-        <h1>选择一个<br /><em>探索方向</em></h1>
-        <p className="room-intro">这不是一张静态首页。点击房间里的发光区域，<br className="desktop-only" />让椅子带你转向我的不同世界。</p>
-      </section>
-
-      <nav className={`hotspots ${active ? "is-hidden" : ""}`} aria-label="个人网站分区">
-        {zones.map((zone) => {
-          const Icon = zone.icon;
-          return (
-            <button key={zone.id} className={`hotspot hotspot-${zone.id}`} onClick={() => selectZone(zone.id)}>
-              <span className="hotspot-pulse"><Icon size={16} /></span>
-              <span className="hotspot-label"><b>{zone.no}</b>{zone.label}<small>点击查看</small></span>
-            </button>
-          );
-        })}
-      </nav>
-
-      <div className="chair-axis" aria-hidden="true"><i /><span>ROTATION AXIS</span></div>
-
-      {current && (
-        <section className="zone-panel" aria-live="polite">
-          <button className="close-panel" onClick={() => setActive(null)} aria-label="关闭当前板块"><X size={20} /></button>
-          <div className="panel-index">{current.no}<span>/ 03</span></div>
-          <p className="panel-eyebrow">{current.eyebrow}</p>
-          <h2>{current.title}</h2>
-          <p className="panel-copy">{current.copy}</p>
-          <div className="panel-stats">{current.stats.map((stat) => <span key={stat}>{stat}</span>)}</div>
-          {current.id === "projects" ? (
-            <div className="project-stack">
-              <article><b>01</b><span>NEURAL INTERFACE<small>AI PRODUCT / 2026</small></span><ArrowRight size={18} /></article>
-              <article><b>02</b><span>VOID ARCHIVE<small>IMMERSIVE WEB / 2025</small></span><ArrowRight size={18} /></article>
-              <article><b>03</b><span>ORBIT OS<small>DESIGN SYSTEM / 2025</small></span><ArrowRight size={18} /></article>
-            </div>
-          ) : (
-            <div className="panel-actions">
-              <a href="mailto:hello@studio.dev">{current.id === "about" ? "下载个人简历" : "发送一封邮件"}<ArrowRight size={16} /></a>
-              <a href="https://github.com" aria-label="GitHub"><Github size={18} /></a>
-            </div>
-          )}
+      {!seated && <>
+        <section className="welcome-copy">
+          <p><Sparkles size={13} /> WELCOME TO MY DIGITAL ROOM</p>
+          <h1>挑一面墙，<br /><em>坐下来看看。</em></h1>
+          <span>点击空间热点，镜头会落座到电竞椅的第一人称视角。</span>
         </section>
-      )}
+        <nav className="standing-zones" aria-label="选择房间板块">
+          {zones.map((zone) => { const Icon = zone.icon; return (
+            <button key={zone.id} className={`standing-zone standing-${zone.id}`} onClick={() => enterZone(zone.id)}>
+              <i><Icon size={16} /></i><span><b>{zone.no}</b>{zone.label}<small>坐下并进入</small></span>
+            </button>
+          ); })}
+        </nav>
+      </>}
 
-      <div className="hud bottom-hud">
-        <div className="hint"><MousePointer2 size={14} /> CLICK A HOTSPOT</div>
-        <div className="room-nav">
-          <button onClick={() => navigate(-1)} aria-label="上一个板块"><ArrowLeft size={17} /></button>
-          <span>{active ? `${String(activeIndex + 1).padStart(2, "0")} / 03` : "ROOM / 00"}</span>
-          <button onClick={() => navigate(1)} aria-label="下一个板块"><ArrowRight size={17} /></button>
-        </div>
-        <button className="reset" onClick={() => setActive(null)}><RotateCcw size={14} /> RESET VIEW</button>
+      {seated && <nav className="wall-map" aria-label="切换房间墙面">
+        {zones.map((zone) => <button key={zone.id} className={zone.id === active ? "active" : ""} onClick={() => enterZone(zone.id)}><span>{zone.no}</span>{zone.short}</button>)}
+      </nav>}
+
+      {seated && current && <section key={active} className="content-panel">
+        <p className="panel-eyebrow">{current.eyebrow}</p><h2>{current.title}</h2><p className="panel-copy">{current.copy}</p>
+        <div className="panel-tags">{current.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+        {current.id === "projects" ? <div className="projects">
+          <article><b>01</b><span>NEURAL INTERFACE<small>AI PRODUCT / 2026</small></span><ArrowRight size={17} /></article>
+          <article><b>02</b><span>VOID ARCHIVE<small>IMMERSIVE WEB / 2025</small></span><ArrowRight size={17} /></article>
+          <article><b>03</b><span>ORBIT OS<small>DESIGN SYSTEM / 2025</small></span><ArrowRight size={17} /></article>
+        </div> : <div className="panel-actions"><a href="mailto:hello@studio.dev">{current.id === "about" ? "查看完整履历" : "一起做点酷的"}<ArrowRight size={15} /></a><a href="https://github.com" aria-label="GitHub"><Github size={18} /></a></div>}
+      </section>}
+
+      <div className="chair-loader" aria-live="polite">
+        <div className="chair-orbit"><i /><Armchair size={36} /></div>
+        <p>{phase === "seating" ? "TAKING A SEAT" : "ROTATING TO NEXT SPACE"}</p><span>{phase === "seating" ? "正在落座" : "电竞椅旋转中"}</span>
       </div>
 
-      <button className="mobile-enter" onClick={() => setEntered(true)}><ChevronDown size={16} /> ENTER ROOM</button>
-      <div className="corner corner-tl" /><div className="corner corner-tr" /><div className="corner corner-bl" /><div className="corner corner-br" />
+      {seated && <div className="bottom-controls">
+        <button onClick={() => navigate(-1)} aria-label="上一面墙"><ArrowLeft size={18} /></button>
+        <span>坐姿视角 <b>{current?.no} / 03</b></span>
+        <button onClick={() => navigate(1)} aria-label="下一面墙"><ArrowRight size={18} /></button>
+      </div>}
+      {seated && <button className="stand-up" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><X size={14} /> 离开座位</button>}
+      <div className="grain" />
     </main>
   );
 }
