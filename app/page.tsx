@@ -3,16 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Armchair, ArrowLeft, ArrowRight, Braces, Cpu, Github, Mail, Radio, Sparkles, Terminal, UserRound, X } from "lucide-react";
 
-type ZoneId = "about" | "projects" | "lab";
+type ZoneId = "about" | "projects" | "lab" | "contact";
 type Phase = "idle" | "seating" | "turning";
 
 const zones = [
-  { id: "about" as const, no: "01", label: "ABOUT.EXE", short: "IDENTITY", eyebrow: "LEFT WALL / IDENTITY", title: "在代码与想象力的交界处，构建有生命力的数字体验。", copy: "你好，我是一名创意开发者。我把产品思维、视觉叙事与前端工程组合起来，让每一次点击都像进入一个新世界。", tags: ["06+ YEARS", "SHANGHAI / REMOTE", "AVAILABLE 2026"], icon: UserRound },
+  { id: "about" as const, no: "01", label: "ABOUT.EXE", short: "IDENTITY", eyebrow: "RIGHT WALL / IDENTITY", title: "在代码与想象力的交界处，构建有生命力的数字体验。", copy: "你好，我是一名创意开发者。我把产品思维、视觉叙事与前端工程组合起来，让每一次点击都像进入一个新世界。", tags: ["06+ YEARS", "SHANGHAI / REMOTE", "AVAILABLE 2026"], icon: UserRound },
   { id: "projects" as const, no: "02", label: "PROJECTS.LOG", short: "SELECTED WORK", eyebrow: "FRONT WALL / SELECTED WORK", title: "不是作品列表，而是三次值得进入的任务现场。", copy: "从品牌官网到 AI 产品原型，每个项目都由一个明确的问题开始，最终落到可感知、可使用、可增长的体验。", tags: ["AI PRODUCT", "IMMERSIVE WEB", "DESIGN SYSTEM"], icon: Braces },
-  { id: "lab" as const, no: "03", label: "LAB.SYS", short: "SKILLS & CONTACT", eyebrow: "RIGHT WALL / SKILLS & CONTACT", title: "保持实验，保持在线。一起制造一点没见过的东西。", copy: "React、TypeScript、WebGL、动效与生成式 AI 是我的常用工具。如果你有一个大胆的想法，右侧频道随时开放。", tags: ["REACT / NEXT", "WEBGL / MOTION", "HELLO@STUDIO.DEV"], icon: Cpu },
+  { id: "lab" as const, no: "03", label: "LAB.SYS", short: "AI LAB", eyebrow: "LEFT WALL / AI PRODUCT LAB", title: "让产品思考、视觉实验与 AI 能力在这里发生连接。", copy: "这里记录原型、工作流与持续迭代的实验。技术是材料，体验和真实问题才是产品的起点。", tags: ["AI PROTOTYPE", "PRODUCT DESIGN", "EXPERIMENTS"], icon: Cpu },
+  { id: "contact" as const, no: "04", label: "CONNECT.SYS", short: "CONTACT", eyebrow: "BACK WALL / CONNECT", title: "转到房间的最后一面，也许是我们合作的第一步。", copy: "如果你正在构建一个值得认真对待的 AI 产品，欢迎带着问题、想法或一张不完整的草图来找我。", tags: ["OPEN TO COLLAB", "AI PRODUCT", "HELLO@STUDIO.DEV"], icon: Sparkles },
 ];
 
-const faceRotation: Record<ZoneId, number> = { about: -90, projects: 0, lab: 90 };
+const faceRotation: Record<ZoneId, number> = { about: 90, projects: 0, lab: -90, contact: -180 };
 
 export default function Home() {
   const [doorOpen, setDoorOpen] = useState(false);
@@ -21,9 +22,17 @@ export default function Home() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [rotation, setRotation] = useState(0);
   const timers = useRef<number[]>([]);
+  const autoStarted = useRef(false);
 
   const clearTimers = () => { timers.current.forEach(window.clearTimeout); timers.current = []; };
   useEffect(() => { const timer = window.setTimeout(() => setDoorOpen(true), 2350); return () => { window.clearTimeout(timer); clearTimers(); }; }, []);
+  useEffect(() => {
+    if (!doorOpen || autoStarted.current) return;
+    autoStarted.current = true;
+    timers.current.push(window.setTimeout(() => { setActive("about"); setRotation(90); setPhase("seating"); }, 1700));
+    timers.current.push(window.setTimeout(() => setSeated(true), 2750));
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 3650));
+  }, [doorOpen]);
 
   const enterZone = useCallback((id: ZoneId) => {
     if (phase !== "idle") return;
@@ -45,7 +54,7 @@ export default function Home() {
       return candidate;
     });
     setActive(id);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 3150));
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 3750));
   }, [active, phase, seated]);
 
   const navigate = useCallback((direction: number) => {
@@ -61,7 +70,7 @@ export default function Home() {
       return candidate;
     });
     setActive(nextId);
-    timers.current.push(window.setTimeout(() => setPhase("idle"), 3150));
+    timers.current.push(window.setTimeout(() => setPhase("idle"), 3750));
   }, [active, phase, seated]);
 
   useEffect(() => {
@@ -85,6 +94,7 @@ export default function Home() {
           <div className="room-face face-projects"><div className="face-image" /></div>
           <div className="room-face face-lab"><div className="face-image" /></div>
           <div className="room-face face-about"><div className="face-image" /></div>
+          <div className="room-face face-contact"><div className="face-image" /></div>
           <div className="room-plane room-ceiling" />
           <div className="room-plane room-floor" />
         </div>
@@ -106,16 +116,9 @@ export default function Home() {
       {!seated && <>
         <section className="welcome-copy">
           <p><Sparkles size={13} /> WELCOME TO MY DIGITAL ROOM</p>
-          <h1>挑一面墙，<br /><em>坐下来看看。</em></h1>
-          <span>点击空间热点，镜头会落座到电竞椅的第一人称视角。</span>
+          <h1>门已打开，<br /><em>正在为你转向。</em></h1>
+          <span>镜头将自动落座，并从右侧第一面墙开始探索。</span>
         </section>
-        <nav className="standing-zones" aria-label="选择房间板块">
-          {zones.map((zone) => { const Icon = zone.icon; return (
-            <button key={zone.id} className={`standing-zone standing-${zone.id}`} onClick={() => enterZone(zone.id)}>
-              <i><Icon size={16} /></i><span><b>{zone.no}</b>{zone.label}<small>坐下并进入</small></span>
-            </button>
-          ); })}
-        </nav>
       </>}
 
       {seated && <nav className="wall-map" aria-label="切换房间墙面">
@@ -139,7 +142,7 @@ export default function Home() {
 
       {seated && <div className="bottom-controls">
         <button onClick={() => navigate(-1)} aria-label="上一面墙"><ArrowLeft size={18} /></button>
-        <span>坐姿视角 <b>{current?.no} / 03</b></span>
+        <span>坐姿视角 <b>{current?.no} / 04</b></span>
         <button onClick={() => navigate(1)} aria-label="下一面墙"><ArrowRight size={18} /></button>
       </div>}
       {seated && <button className="stand-up" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><X size={14} /> 离开座位</button>}
