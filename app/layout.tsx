@@ -2,22 +2,22 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LinkFlow — Signals into action",
-  description: "Shape scattered signals into meaningful outcomes via AI-driven workflows.",
+  title: "NO FEAR — Creative Developer",
+  description: "走进一间属于创意开发者的数字工作室，探索项目、能力与实验。",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
   openGraph: {
-    title: "LinkFlow — Signals into action",
-    description: "Shape scattered signals into meaningful outcomes via AI-driven workflows.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "LinkFlow — Signals into action" }],
+    title: "NO FEAR — Creative Developer",
+    description: "走进一间属于创意开发者的数字工作室。",
+    images: [{ url: "/assets/codex-room.png", width: 1672, height: 939, alt: "NO FEAR 数字工作室" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "LinkFlow — Signals into action",
-    description: "Shape scattered signals into meaningful outcomes via AI-driven workflows.",
-    images: ["/og.png"],
+    title: "NO FEAR — Creative Developer",
+    description: "走进一间属于创意开发者的数字工作室。",
+    images: ["/assets/codex-room.png"],
   },
 };
 
@@ -27,13 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-        <link href="https://db.onlinewebfonts.com/c/6e47ef470dd19698c911332a9b4d1cf4?family=Neue+Haas+Grotesk+Text+Pro" rel="stylesheet" />
-        <link href="https://db.onlinewebfonts.com/c/dec0d9b4e22ca588dc20e1e2e09a59b5?family=Neue+Haas+Grotesk+Display+Pro+55+Roman" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body>{children}</body>
     </html>

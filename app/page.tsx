@@ -1,57 +1,182 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { LogIn, Menu, Play, Sparkles, UserPlus, X } from "lucide-react";
-import BoomerangVideoBg from "./BoomerangVideoBg";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Braces,
+  ChevronDown,
+  Code2,
+  Cpu,
+  Github,
+  Mail,
+  MousePointer2,
+  Radio,
+  RotateCcw,
+  Sparkles,
+  Terminal,
+  UserRound,
+  X,
+} from "lucide-react";
 
-const BG_VIDEO = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_131941_d136af49-e243-493a-be14-6ff3f24e09e6.mp4";
-const navLinks = [{ href: "#purpose", label: "Purpose" }, { href: "#process", label: "The Process" }, { href: "#tariffs", label: "Tariffs" }];
+type ZoneId = "about" | "projects" | "lab";
+
+const zones = [
+  {
+    id: "about" as const,
+    no: "01",
+    label: "ABOUT.EXE",
+    eyebrow: "LEFT WING / IDENTITY",
+    title: "在代码与想象力的交界处，构建有生命力的数字体验。",
+    copy: "你好，我是一名创意开发者。我把产品思维、视觉叙事与前端工程组合起来，让每一次点击都像进入一个新世界。",
+    stats: ["06+ YEARS", "SHANGHAI / REMOTE", "AVAILABLE 2026"],
+    icon: UserRound,
+  },
+  {
+    id: "projects" as const,
+    no: "02",
+    label: "PROJECTS.LOG",
+    eyebrow: "CENTER DECK / SELECTED WORK",
+    title: "不是作品列表，而是三次值得进入的任务现场。",
+    copy: "从品牌官网到 AI 产品原型，每个项目都由一个明确的问题开始，最终落到可感知、可使用、可增长的体验。",
+    stats: ["AI PRODUCT", "IMMERSIVE WEB", "DESIGN SYSTEM"],
+    icon: Braces,
+  },
+  {
+    id: "lab" as const,
+    no: "03",
+    label: "LAB.SYS",
+    eyebrow: "RIGHT BAY / SKILLS & CONTACT",
+    title: "保持实验，保持在线。一起制造一点没见过的东西。",
+    copy: "React、TypeScript、WebGL、动效与生成式 AI 是我的常用工具。如果你有一个大胆的想法，右侧频道随时开放。",
+    stats: ["REACT / NEXT", "WEBGL / MOTION", "HELLO@STUDIO.DEV"],
+    icon: Cpu,
+  },
+];
 
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
-  const closeMenu = () => setMenuOpen(false);
+  const [entered, setEntered] = useState(false);
+  const [active, setActive] = useState<ZoneId | null>(null);
+  const [transitioning, setTransitioning] = useState(false);
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const activeIndex = zones.findIndex((zone) => zone.id === active);
+  const current = useMemo(() => zones.find((zone) => zone.id === active), [active]);
 
-  return <main className="relative min-h-screen w-full overflow-hidden sm:h-screen">
-    <BoomerangVideoBg src={BG_VIDEO} className="absolute inset-0 h-full w-full" />
-    <div className="hero-wash" aria-hidden="true" />
-    <nav className="absolute left-0 right-0 top-0 z-30 flex items-center justify-between px-4 py-4 sm:px-6 sm:py-6 md:px-10">
-      <a href="#top" className="flex items-center gap-2 text-[#2d3a2a]" aria-label="LinkFlow home"><span className="text-lg font-semibold tracking-tight sm:text-xl md:text-2xl">LinkFlow<sup className="text-[10px] font-medium sm:text-xs">TM</sup></span></a>
-      <div className="hidden items-center gap-1 rounded-full border border-white/60 bg-white/70 py-1 pl-6 pr-1 shadow-sm backdrop-blur-md lg:flex">
-        {navLinks.map((link, index) => <a key={link.href} href={link.href} className={`px-3 py-2 text-sm transition-colors ${index === 0 ? "font-semibold text-[#1f2a1d]" : "font-medium text-[#4b5b47] hover:text-[#1f2a1d]"}`}>{link.label}</a>)}
-        <a href="#signup" className="ml-2 rounded-full bg-[#1f2a1d] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#2a3827]">Try it Live</a>
+  useEffect(() => {
+    const timer = window.setTimeout(() => setEntered(true), 2600);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActive(null);
+      if (event.key === "ArrowLeft") navigate(-1);
+      if (event.key === "ArrowRight") navigate(1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  function selectZone(id: ZoneId) {
+    if (id === active || transitioning) return;
+    setTransitioning(true);
+    setActive(id);
+    window.setTimeout(() => setTransitioning(false), 900);
+  }
+
+  function navigate(direction: number) {
+    if (!entered || transitioning) return;
+    const next = active === null ? (direction > 0 ? 0 : zones.length - 1) : (activeIndex + direction + zones.length) % zones.length;
+    selectZone(zones[next].id);
+  }
+
+  return (
+    <main
+      className={`experience ${entered ? "is-entered" : "is-intro"} ${active ? `view-${active}` : "view-room"} ${transitioning ? "is-turning" : ""}`}
+      onMouseMove={(event) => {
+        if (window.innerWidth < 768) return;
+        setParallax({ x: event.clientX / window.innerWidth - 0.5, y: event.clientY / window.innerHeight - 0.5 });
+      }}
+    >
+      <div className="room-stage" style={{ "--mx": parallax.x, "--my": parallax.y } as React.CSSProperties} aria-hidden="true">
+        <div className="room-image" />
+        <div className="room-vignette" />
+        <div className="scanlines" />
       </div>
-      <div className="flex items-center gap-3 text-[#2d3a2a] sm:gap-6">
-        <a href="#signup" className="hidden items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80 sm:flex"><UserPlus className="h-4 w-4" />Sign Me Up!</a>
-        <a href="#login" className="hidden items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80 sm:flex"><LogIn className="h-4 w-4" />Enter</a>
-        <button onClick={() => setMenuOpen(value => !value)} className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/70 text-[#1f2a1d] backdrop-blur-md transition-all duration-300 hover:bg-white/90 lg:hidden" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen}>
-          <Menu className={`absolute h-5 w-5 transition-all duration-300 ${menuOpen ? "rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100"}`} />
-          <X className={`absolute h-5 w-5 transition-all duration-300 ${menuOpen ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-50 opacity-0"}`} />
+
+      <div className="door door-left" aria-hidden="true"><span /></div>
+      <div className="door door-right" aria-hidden="true"><span /></div>
+      <div className="intro-copy" aria-live="polite">
+        <div className="intro-mark"><Terminal size={17} /> NF_OS</div>
+        <p>INITIALIZING CREATIVE WORKSPACE</p>
+        <div className="loader"><i /></div>
+        <button onClick={() => setEntered(true)}>点击进入 / ENTER</button>
+      </div>
+
+      <header className="hud top-hud">
+        <button className="brand" onClick={() => setActive(null)} aria-label="返回房间主视图">
+          <span className="brand-dot" />
+          <span>NO FEAR<small>CREATIVE DEVELOPER</small></span>
         </button>
-      </div>
-    </nav>
+        <div className="system-status"><Radio size={13} /> SYSTEM ONLINE <span>•</span> 20:26:07</div>
+        <a className="contact-link" href="mailto:hello@studio.dev">建立连接 <Mail size={15} /></a>
+      </header>
 
-    <div className={`fixed inset-0 z-20 bg-[#1f2a1d]/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`} onClick={closeMenu} />
-    <aside className={`fixed bottom-0 right-0 top-0 z-20 w-[85%] max-w-sm bg-white/95 shadow-2xl backdrop-blur-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:hidden ${menuOpen ? "translate-x-0" : "translate-x-full"}`}>
-      <div className="flex h-full flex-col px-8 pb-8 pt-24">
-        <div className="flex flex-col gap-1">{navLinks.map((link, index) => <a key={link.href} href={link.href} onClick={closeMenu} style={{ transitionDelay: menuOpen ? `${150 + index * 70}ms` : "0ms" }} className={`border-b border-[#1f2a1d]/10 py-4 text-2xl font-semibold text-[#1f2a1d] transition-all duration-500 ${menuOpen ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}>{link.label}</a>)}</div>
-        <div style={{ transitionDelay: menuOpen ? "400ms" : "0ms" }} className={`mt-8 flex flex-col gap-4 transition-all duration-500 ${menuOpen ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}>
-          <a href="#signup" onClick={closeMenu} className="flex items-center gap-2 text-sm font-medium text-[#2d3a2a] sm:hidden"><UserPlus className="h-4 w-4" />Sign Me Up!</a>
-          <a href="#login" onClick={closeMenu} className="flex items-center gap-2 text-sm font-medium text-[#2d3a2a] sm:hidden"><LogIn className="h-4 w-4" />Enter</a>
-          <a href="#signup" onClick={closeMenu} className="mt-2 rounded-full bg-[#1f2a1d] px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#2a3827]">Try it Live</a>
+      <section className={`room-copy ${active ? "is-hidden" : ""}`} aria-label="房间导航">
+        <p className="kicker"><Sparkles size={14} /> WELCOME TO MY DIGITAL ROOM</p>
+        <h1>选择一个<br /><em>探索方向</em></h1>
+        <p className="room-intro">这不是一张静态首页。点击房间里的发光区域，<br className="desktop-only" />让椅子带你转向我的不同世界。</p>
+      </section>
+
+      <nav className={`hotspots ${active ? "is-hidden" : ""}`} aria-label="个人网站分区">
+        {zones.map((zone) => {
+          const Icon = zone.icon;
+          return (
+            <button key={zone.id} className={`hotspot hotspot-${zone.id}`} onClick={() => selectZone(zone.id)}>
+              <span className="hotspot-pulse"><Icon size={16} /></span>
+              <span className="hotspot-label"><b>{zone.no}</b>{zone.label}<small>点击查看</small></span>
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className="chair-axis" aria-hidden="true"><i /><span>ROTATION AXIS</span></div>
+
+      {current && (
+        <section className="zone-panel" aria-live="polite">
+          <button className="close-panel" onClick={() => setActive(null)} aria-label="关闭当前板块"><X size={20} /></button>
+          <div className="panel-index">{current.no}<span>/ 03</span></div>
+          <p className="panel-eyebrow">{current.eyebrow}</p>
+          <h2>{current.title}</h2>
+          <p className="panel-copy">{current.copy}</p>
+          <div className="panel-stats">{current.stats.map((stat) => <span key={stat}>{stat}</span>)}</div>
+          {current.id === "projects" ? (
+            <div className="project-stack">
+              <article><b>01</b><span>NEURAL INTERFACE<small>AI PRODUCT / 2026</small></span><ArrowRight size={18} /></article>
+              <article><b>02</b><span>VOID ARCHIVE<small>IMMERSIVE WEB / 2025</small></span><ArrowRight size={18} /></article>
+              <article><b>03</b><span>ORBIT OS<small>DESIGN SYSTEM / 2025</small></span><ArrowRight size={18} /></article>
+            </div>
+          ) : (
+            <div className="panel-actions">
+              <a href="mailto:hello@studio.dev">{current.id === "about" ? "下载个人简历" : "发送一封邮件"}<ArrowRight size={16} /></a>
+              <a href="https://github.com" aria-label="GitHub"><Github size={18} /></a>
+            </div>
+          )}
+        </section>
+      )}
+
+      <div className="hud bottom-hud">
+        <div className="hint"><MousePointer2 size={14} /> CLICK A HOTSPOT</div>
+        <div className="room-nav">
+          <button onClick={() => navigate(-1)} aria-label="上一个板块"><ArrowLeft size={17} /></button>
+          <span>{active ? `${String(activeIndex + 1).padStart(2, "0")} / 03` : "ROOM / 00"}</span>
+          <button onClick={() => navigate(1)} aria-label="下一个板块"><ArrowRight size={17} /></button>
         </div>
+        <button className="reset" onClick={() => setActive(null)}><RotateCcw size={14} /> RESET VIEW</button>
       </div>
-    </aside>
 
-    <section id="top" className="relative z-10 flex flex-col items-center px-4 pt-24 text-center sm:px-6 sm:pt-28 md:pt-32">
-      <h1 className="max-w-5xl text-[2rem] font-normal leading-[0.95] tracking-[-0.035em] text-[#336443] sm:text-4xl md:text-5xl lg:text-[4.75rem] xl:text-[5.25rem]">Close the rift <span className="text-[#85AB8B]">linking<br className="hidden sm:block" /> signals and action</span></h1>
-      <p className="mt-6 max-w-md px-2 text-sm leading-relaxed text-[#4b5b47] sm:mt-8 sm:text-base md:text-lg">Shape scattered signals into meaningful outcomes via AI-driven workflows.</p>
-    </section>
-    <section id="purpose" className="absolute bottom-6 left-4 right-4 z-10 max-w-sm sm:bottom-8 sm:left-6 sm:right-auto md:bottom-10 md:left-10">
-      <div className="mb-3 flex items-center gap-2 text-[#3d5638] sm:text-white/95"><Sparkles className="h-4 w-4" /><span className="text-sm font-semibold sm:font-medium">FluxEngine<sup className="text-[10px]">TM</sup></span></div>
-      <p className="mb-6 max-w-xs text-xs font-medium leading-relaxed text-[#3d5638]/90 sm:font-normal sm:text-white/85">LinkFlow smoothly unites your company systems, streamlining data paths between services without having to write custom scripts.</p>
-      <div className="flex flex-wrap items-center gap-4"><a id="signup" href="mailto:hello@linkflow.ai" className="rounded-full bg-[#3d5638] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#2d4228] sm:bg-white sm:px-6 sm:py-3 sm:text-[#1f2a1d] sm:hover:bg-white/90">Try it Live</a><a id="process" href="#tariffs" className="text-sm font-semibold text-[#3d5638] transition-opacity hover:opacity-80 sm:font-medium sm:text-white">Know More.</a></div>
-    </section>
-    <div id="tariffs" className="absolute bottom-8 right-6 z-10 hidden items-center gap-2 text-sm text-white/90 sm:flex md:bottom-10 md:right-10"><button className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-colors hover:bg-white/30" aria-label="Play how we build video"><Play className="ml-0.5 h-3 w-3 fill-white text-white" /></button><span className="font-medium">How we build?</span><span className="text-white/60">1:35</span></div>
-  </main>;
+      <button className="mobile-enter" onClick={() => setEntered(true)}><ChevronDown size={16} /> ENTER ROOM</button>
+      <div className="corner corner-tl" /><div className="corner corner-tr" /><div className="corner corner-bl" /><div className="corner corner-br" />
+    </main>
+  );
 }
