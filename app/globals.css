@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+html, body, #root { height: 100%; margin: 0; font-family: "Neue Haas Grotesk Display Pro 55 Roman", "Neue Haas Grotesk Text Pro", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+body { overflow-x: hidden; background: #d9e6d3; }
+a { color: inherit; text-decoration: none; }
+button, a { -webkit-tap-highlight-color: transparent; }
+video, canvas { object-fit: cover; }
+.hero-wash { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(234, 244, 228, .44) 0%, rgba(238, 246, 230, .07) 36%, rgba(28, 55, 30, .12) 100%); }
+@media (max-width: 639px) { .hero-wash { background: linear-gradient(180deg, rgba(235, 244, 229, .7), rgba(235, 244, 229, .12) 46%, rgba(240, 246, 232, .45)); } }
