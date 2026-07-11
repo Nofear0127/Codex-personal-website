@@ -8,22 +8,17 @@ type ZoneId = "about" | "projects" | "lab" | "contact";
 type Phase = "idle" | "seating" | "turning";
 
 const zones = [
-  { id: "about" as const, no: "01", label: "ABOUT.EXE", short: "孙晨曦", eyebrow: "RIGHT WALL / PROFILE", title: "AI 产品与数据运营，从复杂规则走向可落地的业务结果。", copy: "我是孙晨曦，拥有约两年 AI 相关项目经验，经历覆盖业务运营 PM、数据质量与规模化交付。影视行业背景让我对图片、视频与多模态产品保持长期敏感。", tags: ["AI 产品 / 数据运营", "西安工业大学 · 本科", "ENTJ"], icon: UserRound },
-  { id: "projects" as const, no: "02", label: "PROJECTS.LOG", short: "项目经历", eyebrow: "FRONT WALL / EXPERIENCE", title: "把 AI 数据项目做成可管理、可评估、可规模化的交付系统。", copy: "从需求拆解、规则 SOP、数据流转到质量验收与供应商协同，我关注的不只是完成项目，更是建立可以持续复用的机制。", tags: ["淘天集团 · DEEPWIKI", "智谱清言 · 图片美学", "知识库 / 训练集 / 评测集"], icon: Braces },
-  { id: "lab" as const, no: "03", label: "LAB.SYS", short: "AI 思考", eyebrow: "LEFT WALL / WRITING & TOOLS", title: "持续追踪 Agent、模型能力与 AI 产品落地方法。", copy: "我通过写作拆解 AI 产品经理转型、Agent、MCP、多模态与 FDE 等议题，也使用 Coze、Cursor、Photoshop 搭建工作流、知识库和效率工具。", tags: ["AGENT / MCP", "COZE / CURSOR", "多模态 / FDE"], icon: Cpu },
-  { id: "contact" as const, no: "04", label: "CONNECT.SYS", short: "联系我", eyebrow: "BACK WALL / CONNECT", title: "寻找 AI 产品、智能应用与数据业务方向的新机会。", copy: "我擅长在算法、业务、数据团队和供应商之间建立共识，把模糊需求转化为规则、流程和可验证的交付结果。目前已离职，可随时到岗。", tags: ["随时到岗", "AI 产品 / 智能应用", "1294172722@QQ.COM"], icon: Sparkles },
+  { id: "about" as const, no: "01", label: "PROFILE", short: "详细介绍", eyebrow: "01 / PROFILE", title: "从理解模型，到推动产品落地", copy: "我曾先后在智谱 AI、阿里巴巴参与 AI 产品实践，并在淘天担任 AI 产品经理，主导“购物车对比推荐”功能上线。", tags: ["智谱 AI", "阿里巴巴", "淘天"], icon: UserRound },
+  { id: "lab" as const, no: "02", label: "WRITING", short: "文章", eyebrow: "02 / WRITING", title: "在快速变化中，建立长期判断", copy: "从 2025 年 1 月开始，我持续记录对 AI 行业、技术演进和产品落地的观察。", tags: ["行业观察", "技术解读", "产品方法"], icon: Cpu },
+  { id: "projects" as const, no: "03", label: "PROJECT", short: "项目", eyebrow: "03 / PROJECT", title: "Demo 证明模型可以做到，落地证明产品值得被做。", copy: "AI 项目的价值不在于使用了多少技术，而在于能否以可控的成本，稳定地解决真实问题。", tags: ["AI", "电商", "消费决策"], icon: Braces },
+  { id: "contact" as const, no: "04", label: "METHOD", short: "方法论与联系", eyebrow: "04 / METHOD & CONTACT", title: "最小充分 AI", copy: "只为可验证的价值，增加技术复杂度。", tags: ["效果", "成本", "延迟", "稳定性"], icon: Sparkles },
 ];
 
-const faceRotation: Record<ZoneId, number> = { about: 90, projects: 0, lab: -90, contact: -180 };
-const projectItems = [
-  { id: "deepwiki", no: "01", title: "淘天商品库 · DeepWiki", meta: "业务运营 PM · 2025.07—2026.03", summary: "承接算法与方案需求，负责规则拆解、数据流转、质量管理与规模化交付。", metrics: ["50+ 项目", "300 万+ 数据", "98% 合格率"], detail: "围绕信息质量判断、信息理解、同款聚合、标签增强与知识生成五步流程，将原始商品数据转化为结构化知识数据；独立承接 30+ 需求并主导 20+ 项目规则 SOP。" },
-  { id: "quality", no: "02", title: "规模化质量与交付体系", meta: "流程优化 · 质量管理", summary: "建立培训、FAQ、错误归因与验收机制，让团队规模扩大时仍保持质量稳定。", metrics: ["人效 +30%", "培训 -70%", "节省 50 万+"], detail: "统筹 POC、HRO 与 5 家以上供应商网络，通过分层质量控制、规则培训和数据流转提速，提升整体交付效率并将机制横向复用。" },
-  { id: "zhipu", no: "03", title: "智谱清言 · 图片美学", meta: "数据质检组长 · 2024.12—2025.07", summary: "围绕动画、设计与艺术图像完成标注、质检、规则迭代和分层抽检。", metrics: ["1 万+ 质检", "97.5% 准确率", "团队 Top 1"], detail: "从专业标注进入质量评估与团队协作，持续沉淀 Badcase、Goodcase 和高频错误清单，并优化抽检策略与每周质量分析。" },
-];
+const faceRotation: Record<ZoneId, number> = { about: 90, lab: 0, projects: -90, contact: -180 };
 const articleItems = [
-  { id: "benefit", no: "01", title: "从 AI 热到 AI 效益", meta: "AI 产品 · 商业落地", summary: "模型能力最终需要回到可验证的用户价值与业务收益。", detail: "文章从能力展示、产品采用、成本与组织协同四个层面，讨论企业如何跨过 AI Demo 与真实效益之间的鸿沟。", sections: ["为什么 Demo 不等于产品", "从采用率到结果指标", "成本、风险与组织协同"] },
-  { id: "multi-agent", no: "02", title: "单 Agent 到 Multi-Agent", meta: "Agent · 系统协作", summary: "从任务边界、协作结构和结果责任理解多智能体系统。", detail: "文章分析单 Agent 的能力边界、Multi-Agent 的分工价值，以及何时复杂编排反而会增加成本和不确定性。", sections: ["单 Agent 的能力边界", "多智能体如何分工", "编排成本与结果负责"] },
-  { id: "pm-model", no: "03", title: "AI 产品经理不要只盯模型", meta: "产品方法 · 评测", summary: "先定义真实问题与成功标准，再讨论模型和工程方案。", detail: "文章强调产品经理需要同时关注数据、评测、用户反馈、延迟、成本和合规，把模型能力放进完整产品闭环。", sections: ["先定义用户问题", "轻量评测驱动迭代", "把风险写进产品方案"] },
+  { id: "benefit", category: "AI行业观察", no: "01", title: "从 AI 热到 AI 效益", meta: "AI 行业观察", summary: "模型能力最终需要回到可验证的用户价值与业务收益。", detail: "文章从能力展示、产品采用、成本与组织协同四个层面，讨论企业如何跨过 AI Demo 与真实效益之间的鸿沟。", sections: ["为什么 Demo 不等于产品", "从采用率到结果指标", "成本、风险与组织协同"] },
+  { id: "multi-agent", category: "AI技术解读", no: "02", title: "单 Agent 到 Multi-Agent", meta: "AI 技术解读", summary: "从任务边界、协作结构和结果责任理解多智能体系统。", detail: "文章分析单 Agent 的能力边界、Multi-Agent 的分工价值，以及何时复杂编排反而会增加成本和不确定性。", sections: ["单 Agent 的能力边界", "多智能体如何分工", "编排成本与结果负责"] },
+  { id: "pm-model", category: "AI产品方法", no: "03", title: "AI 产品经理不要只盯模型", meta: "AI 产品方法", summary: "先定义真实问题与成功标准，再讨论模型和工程方案。", detail: "文章强调产品经理需要同时关注数据、评测、用户反馈、延迟、成本和合规，把模型能力放进完整产品闭环。", sections: ["先定义用户问题", "轻量评测驱动迭代", "把风险写进产品方案"] },
 ];
 
 export default function Home() {
@@ -34,7 +29,7 @@ export default function Home() {
   const [rotation, setRotation] = useState(0);
   const [previous, setPrevious] = useState<ZoneId | null>(null);
   const [turnDirection, setTurnDirection] = useState<1 | -1>(1);
-  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("AI行业观察");
   const [selectedArticle, setSelectedArticle] = useState<string | null>(null);
   const timers = useRef<number[]>([]);
 
@@ -43,7 +38,6 @@ export default function Home() {
 
   const enterZone = useCallback((id: ZoneId) => {
     if (phase !== "idle") return;
-    if (id === "projects" && active !== "projects") setSelectedProject(null);
     if (id === "lab" && active !== "lab") setSelectedArticle(null);
     if (!seated) {
       setActive(id);
@@ -78,7 +72,6 @@ export default function Home() {
     const index = zones.findIndex((zone) => zone.id === active);
     const next = (index + direction + zones.length) % zones.length;
     const nextId = zones[next].id;
-    if (nextId === "projects") setSelectedProject(null);
     if (nextId === "lab") setSelectedArticle(null);
     setPrevious(active);
     setTurnDirection(direction >= 0 ? 1 : -1);
@@ -104,8 +97,8 @@ export default function Home() {
   }, [navigate, phase, seated]);
 
   const current = zones.find((zone) => zone.id === active);
-  const project = projectItems.find((item) => item.id === selectedProject);
   const article = articleItems.find((item) => item.id === selectedArticle);
+  const filteredArticles = articleItems.filter((item) => item.category === selectedCategory);
   const faceClass = (id: ZoneId) => `room-face face-${id} ${active === id ? "is-current" : ""} ${previous === id ? "is-previous" : ""}`;
 
   return (
@@ -137,11 +130,11 @@ export default function Home() {
       </header>
 
       <section className={`identity-story ${!seated ? "identity-intro" : active === "about" ? "identity-left" : "identity-dock"}`}>
-        <p><Sparkles size={13} /> WELCOME · AI PRODUCT & DATA OPERATIONS</p>
-        <h1>孙晨曦</h1>
-        <h3>AI 产品与数据运营</h3>
-        <span>把复杂规则、数据生产与模型能力，转化为可落地、可评估的业务结果。</span>
-        <div><b>约 2 年 AI 项目经验</b><b>影视与多模态背景</b><b>ENTJ</b></div>
+        <p><Sparkles size={13} /> TECHNICAL AI PRODUCT MANAGER</p>
+        <h1>{!seated ? "技术型 AI 产品经理" : "你好，我是雾崎"}</h1>
+        <h3>{!seated ? "把模型能力，转化为真实的产品价值。" : "智谱 AI × 阿里巴巴 × 淘天"}</h3>
+        <span>{!seated ? "拥有 3 年一线大厂 AI 产品实践经历。我关注 AI 技术与业务之间的连接，擅长以更低的技术复杂度和成本，推动 AI 产品高效落地。" : active === "about" ? "技术型 AI 产品经理，拥有 2 年 AI 产品实习和 1 年全职工作经历。用刚好足够的技术方案，实现最大的业务价值。" : "技术型 AI 产品经理 · 把模型能力转化为真实产品价值"}</span>
+        <div><b>智谱 AI</b><b>阿里巴巴</b><b>淘天</b></div>
         {!seated && doorOpen && <button className="identity-enter" onClick={() => enterZone("about")}>进入我的工作室 <ArrowRight size={16} /></button>}
       </section>
 
@@ -149,17 +142,30 @@ export default function Home() {
         {zones.map((zone) => <button key={zone.id} className={zone.id === active ? "active" : ""} onClick={() => enterZone(zone.id)}><span>{zone.no}</span>{zone.short}</button>)}
       </nav>}
 
-      {seated && current && <section key={active} className={`content-panel ${project || article ? "is-detail" : "is-list"}`}>
-        <p className="panel-eyebrow">{current.eyebrow}</p><h2>{project?.title || article?.title || current.title}</h2><p className="panel-copy">{project?.summary || article?.summary || current.copy}</p>
-        <div className="panel-tags">{current.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-        {current.id === "projects" ? project ? <div className="detail-preview">
-          <button className="detail-back" onClick={() => setSelectedProject(null)}><ArrowLeft size={15} /> 返回项目列表</button><p className="detail-meta">{project.meta}</p><p>{project.detail}</p><div className="detail-metrics">{project.metrics.map((metric) => <b key={metric}>{metric}</b>)}</div>
-        </div> : <div className="projects">{projectItems.map((item) => <button key={item.id} onClick={() => setSelectedProject(item.id)}><b>{item.no}</b><span>{item.title}<small>{item.summary}</small></span><ArrowRight size={17} /></button>)}</div>
-        : current.id === "lab" ? article ? <div className="detail-preview article-preview">
-          <button className="detail-back" onClick={() => setSelectedArticle(null)}><ArrowLeft size={15} /> 返回文章列表</button><p className="detail-meta">{article.meta}</p><p>{article.detail}</p><ol>{article.sections.map((section) => <li key={section}>{section}</li>)}</ol><a className="read-more" href="mailto:1294172722@qq.com">阅读全文 <ArrowRight size={15} /></a>
-        </div> : <div className="projects article-list">{articleItems.map((item) => <button key={item.id} onClick={() => setSelectedArticle(item.id)}><b>{item.no}</b><span>{item.title}<small>{item.meta} · {item.summary}</small></span><ArrowRight size={17} /></button>)}</div>
-        : current.id === "contact" ? <div className="contact-content"><div className="contact-capabilities"><span>我能带来的价值</span><b>复杂需求拆解</b><b>数据与质量体系</b><b>跨团队规模化交付</b></div><div className="contact-facts"><p><small>目标方向</small>AI 产品 / 智能应用 / 数据业务</p><p><small>当前状态</small>已离职 · 随时到岗</p><p><small>教育背景</small>西安工业大学 · 本科</p></div><div className="panel-actions"><a href="mailto:1294172722@qq.com">发送邮件 <ArrowRight size={15} /></a><a href="mailto:1294172722@qq.com" aria-label="Email"><Mail size={18} /></a></div></div>
-        : <div className="about-detail"><p><b>AI 项目经验</b>覆盖业务运营 PM、数据质量与规模化交付。</p><p><b>多模态背景</b>影视从业经历带来对图片、视频与视听语言的长期理解。</p><p><b>工作方式</b>先定义问题与成功标准，再建立可复用的规则和反馈闭环。</p><div className="panel-actions"><a href="mailto:1294172722@qq.com">获取完整简历 <ArrowRight size={15} /></a></div></div>}
+      {seated && active === "about" && <section className="profile-detail-panel glass-panel">
+        <p className="panel-eyebrow">01 / PROFILE</p><h2>从理解模型，<br />到推动产品落地</h2>
+        <p>我曾先后在智谱 AI、阿里巴巴参与 AI 产品实践，并在淘天担任 AI 产品经理，主导“购物车对比推荐”功能上线。</p>
+        <p>我关注的不只是产品功能，也包括模型选型、Prompt、Context Engineering、RAG、Agent、效果评测与推理成本。</p>
+        <blockquote>AI 产品的价值不在于使用了多少复杂技术，而在于能否以合理的成本，稳定地解决真实问题。</blockquote>
+        <a className="primary-action" href="mailto:1294172722@qq.com">下载我的简历 <ArrowRight size={16} /></a>
+      </section>}
+
+      {seated && active === "lab" && <section className={`writing-layout glass-panel ${article ? "article-open" : ""}`}>
+        <div className="writing-intro"><p className="panel-eyebrow">02 / WRITING</p><h2>在快速变化中，<br />建立长期判断</h2><p>从 2025 年 1 月开始，我持续记录对 AI 行业、技术演进和产品落地的观察。我不希望只复述新闻，而是尝试回答：新技术解决了什么、改变了哪些产品可能性、距离真实落地还有多远？</p></div>
+        <div className="writing-index"><h3>{article ? selectedCategory : "文章分类"}</h3>{article ? filteredArticles.map((item) => <button key={item.id} className={item.id === selectedArticle ? "active" : ""} onClick={() => setSelectedArticle(item.id)}>{item.no} {item.title}</button>) : ["AI行业观察", "AI技术解读", "AI产品方法", "项目与实践"].map((category) => <button key={category} className={category === selectedCategory ? "active" : ""} onClick={() => { setSelectedCategory(category); setSelectedArticle(null); }}>{category}<ArrowRight size={14} /></button>)}</div>
+        <div className="writing-main">{article ? <><p className="panel-eyebrow">{article.category} / ARTICLE</p><h2>{article.title}</h2><p className="article-lead">{article.detail}</p><ol>{article.sections.map((section) => <li key={section}>{section}</li>)}</ol><a className="primary-action" href="mailto:1294172722@qq.com">阅读全文 <ArrowRight size={16} /></a></> : <><h3>{selectedCategory}</h3>{filteredArticles.length ? filteredArticles.map((item) => <button className="article-row" key={item.id} onClick={() => setSelectedArticle(item.id)}><b>{item.no}</b><span>{item.title}<small>{item.summary}</small></span><ArrowRight /></button>) : <div className="empty-category">该分类文章正在整理中，欢迎稍后回来。</div>}</>}</div>
+      </section>}
+
+      {seated && active === "projects" && <section className="project-layout glass-panel">
+        <div className="project-belief"><p className="panel-eyebrow">03 / PROJECT</p><h2>Demo 证明模型可以做到，<br />落地证明产品值得被做。</h2><p>AI 项目的价值不在于使用了多少技术，而在于能否以可控的成本，稳定地解决真实问题。</p></div>
+        <div className="project-name"><span>FEATURED PROJECT</span><h2>淘天购物车<br />对比推荐</h2><p>AI × 电商 × 消费决策</p><div><b>我的角色</b>AI 产品经理／项目主导者<br /><b>项目状态</b>已上线</div></div>
+        <div className="project-summary"><h3>项目简介</h3><p>用户面对多个相似商品时，需要反复查看和比较信息，决策成本较高。</p><p>购物车对比推荐利用 AI 提取商品差异、组织比较维度并生成推荐解释，帮助用户更高效地完成购买决策。</p></div>
+        <div className="project-details"><h3>项目明细</h3><ul><li>分析用户比较与决策需求</li><li>设计 AI 对比推荐产品方案</li><li>定义模型输入、输出与效果标准</li><li>协同算法、研发和设计团队</li><li>处理异常、降级与兜底场景</li><li>推动产品完成上线验证</li></ul><blockquote>AI 不替用户做决定，而是帮助用户更低成本地完成判断。</blockquote></div>
+      </section>}
+
+      {seated && active === "contact" && <section className="method-contact-layout glass-panel">
+        <div><p className="panel-eyebrow">04 / METHODOLOGY</p><h2>最小充分 AI</h2><h3>只为可验证的价值，增加技术复杂度。</h3><ul><li>从真实业务问题出发，而不是从模型出发</li><li>能用简单方案解决，就不引入复杂架构</li><li>根据任务选择 Prompt、RAG、Workflow、Agent 或 SFT</li><li>同时评估效果、成本、延迟与稳定性</li><li>通过评测、校验、降级和人工介入管理不确定性</li></ul><blockquote>我追求的不是最低成本，而是单位成本下最大的业务价值。</blockquote></div>
+        <div className="contact-side"><p className="panel-eyebrow">LET'S CONNECT</p><h2>与我联系</h2><h3>期待一起做真正落地的 AI 产品。</h3><p>我正在关注 AI 产品经理、AI 解决方案及大模型应用相关机会，也欢迎交流 AI 产品、技术落地与行业趋势。</p><dl><dt>邮箱</dt><dd>1294172722@qq.com</dd><dt>求职状态</dt><dd>开放 AI 产品相关机会</dd></dl><div className="panel-actions"><a href="mailto:1294172722@qq.com">发送邮件</a><a href="#">下载简历</a><a href="mailto:1294172722@qq.com">添加微信</a></div><small>在实践中验证，在写作中形成判断。 © 2026 雾崎</small></div>
       </section>}
 
       <div className="chair-loader" aria-live="polite">
