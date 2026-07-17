@@ -25,32 +25,36 @@ async function render() {
   );
 }
 
-test("server-renders the 0715 portfolio homepage", async () => {
+test("server-renders the 0717 portfolio homepage", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>孙晨曦（雾崎）— 技术型 AI 产品经理<\/title>/i);
-  assert.match(html, /近 3 年头部大厂（阿里巴巴 \+ 智谱）AI 产品经历/);
+  assert.match(html, /<title>孙晨曦 · 杠杆型 AI 产品经理｜阿里巴巴 × 字节跳动 × 智谱<\/title>/i);
+  assert.match(html, /3 年头部大厂（阿里巴巴 \+ 字节跳动 \+ 智谱）AI 产品经历/);
   assert.match(html, /mailto:sunchenxi@wuqiai\.cn/);
   assert.match(html, /WUQI_ROOM/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
-test("keeps the 0715 resume claims and downloadable resume wired", async () => {
-  const [page, layout] = await Promise.all([
+test("keeps the 0717 resume claims, assets and project data wired", async () => {
+  const [page, layout, projectData] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../data/projects.ts", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /3C 品类产品负责人/);
-  assert.match(page, /对照实验结果 · 3C 板块/);
-  assert.match(page, /\+4\.5%/);
-  assert.match(page, /\+11\.5%/);
-  assert.match(page, /总述 → 相同点 → 核心区别 → 选购建议 → 小提示 → 参数对比表/);
-  assert.match(page, /参与 CogView 系列文生图模型的数据构建与效果迭代/);
-  assert.match(layout, /孙晨曦（雾崎）— 技术型 AI 产品经理/);
+  assert.match(page, /Seedream/);
+  assert.match(page, /AgentTuning/);
+  assert.match(projectData, /关键成果 · 3C 板块 · 对照实验/);
+  assert.match(projectData, /\+4\.5%/);
+  assert.match(projectData, /\+11\.5%/);
+  assert.match(projectData, /七段式输出：总述 → 相同点 → 核心区别 → 选购建议 → 小提示 → 参数对比表 → 追问入口/);
+  assert.match(layout, /孙晨曦 · 杠杆型 AI 产品经理/);
+  assert.doesNotMatch(`${page}\n${layout}\n${projectData}`, /CogView|TECHNICAL|技术型|近 3 年|年龄|六段式/);
   await access(new URL("../public/孙晨曦-AI产品经理-简历-0715.pdf", import.meta.url));
+  await access(new URL("../public/assets/wechat-qr.png", import.meta.url));
   await assert.rejects(access(new URL("public/_sites-preview", templateRoot)));
 });
