@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Armchair, ArrowLeft, ArrowRight, Braces, Cpu, Mail, Radio, Sparkles, Terminal, UserRound, X } from "lucide-react";
+import { Armchair, ArrowLeft, ArrowRight, Braces, Check, Copy, Cpu, Download, Mail, Radio, Sparkles, Terminal, UserRound, X } from "lucide-react";
 import MouseCompanion from "./MouseCompanion";
 import Mascot from "./Mascot";
 import { projects, type ProjectId } from "../data/projects";
-import { siteAssets } from "./siteConfig";
+import { contactDetails, siteAssets, WECHAT_ID } from "./siteConfig";
 
 type ZoneId = "about" | "projects" | "lab" | "contact";
 type Phase = "idle" | "seating" | "turning";
@@ -55,6 +55,37 @@ function MarkdownPreview({ content }: { content: string }) {
   })}</div>;
 }
 
+function CopyableField({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false);
+  const resetTimer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (resetTimer.current) window.clearTimeout(resetTimer.current);
+  }, []);
+
+  const copyValue = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      if (resetTimer.current) window.clearTimeout(resetTimer.current);
+      resetTimer.current = window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return <>
+    <dt>{label}</dt>
+    <dd className="copyable-value">
+      <span>{value}</span>
+      <button type="button" onClick={copyValue} aria-label={`复制${label}`} className={copied ? "is-copied" : ""}>
+        {copied ? <Check size={15} /> : <Copy size={15} />}
+        <em>{copied ? "已复制" : "复制"}</em>
+      </button>
+    </dd>
+  </>;
+}
+
 export default function Home() {
   const [doorOpen, setDoorOpen] = useState(false);
   const [seated, setSeated] = useState(false);
@@ -68,9 +99,13 @@ export default function Home() {
   const [articleContent, setArticleContent] = useState("");
   const [projectView, setProjectView] = useState<ProjectId>("taotian");
   const [qrMissing, setQrMissing] = useState(false);
+  const [connectOpen, setConnectOpen] = useState(false);
   const timers = useRef<number[]>([]);
   const writingMainRef = useRef<HTMLDivElement>(null);
   const writingScroll = useRef(0);
+  const connectButtonRef = useRef<HTMLButtonElement>(null);
+  const connectDialogRef = useRef<HTMLDivElement>(null);
+  const connectCloseRef = useRef<HTMLButtonElement>(null);
 
   const clearTimers = () => { timers.current.forEach(window.clearTimeout); timers.current = []; };
   useEffect(() => () => clearTimers(), []);
@@ -155,8 +190,47 @@ export default function Home() {
     window.setTimeout(() => writingMainRef.current?.scrollTo({ top: writingScroll.current }), 0);
   }, []);
 
+  const closeConnect = useCallback(() => setConnectOpen(false), []);
+
+  useEffect(() => {
+    if (!connectOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const triggerButton = connectButtonRef.current;
+    document.body.style.overflow = "hidden";
+    const focusFrame = window.requestAnimationFrame(() => connectCloseRef.current?.focus());
+    const onModalKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closeConnect();
+        return;
+      }
+      if (event.key !== "Tab" || !connectDialogRef.current) return;
+      const focusable = Array.from(connectDialogRef.current.querySelectorAll<HTMLElement>('button, a[href], [tabindex]:not([tabindex="-1"])'))
+        .filter((element) => !element.hasAttribute("disabled"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", onModalKey);
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      window.removeEventListener("keydown", onModalKey);
+      document.body.style.overflow = previousOverflow;
+      triggerButton?.focus();
+    };
+  }, [closeConnect, connectOpen]);
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
+      if (connectOpen) return;
       if (event.key === "Escape" && active === "lab" && selectedArticle) { closeArticle(); return; }
       if (event.key === "ArrowLeft") navigate(-1);
       if (event.key === "ArrowRight") navigate(1);
@@ -164,7 +238,7 @@ export default function Home() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, closeArticle, navigate, phase, seated, selectedArticle]);
+  }, [active, closeArticle, connectOpen, navigate, phase, seated, selectedArticle]);
 
   useEffect(() => {
     const applyWritingRoute = () => {
@@ -207,7 +281,7 @@ export default function Home() {
       <header className="top-hud">
         <button className="brand" onClick={() => { if (phase === "idle") { setSeated(false); setActive(null); setRotation(0); } }}><b />雾崎<small>LEVERAGE AI PRODUCT MANAGER</small></button>
         <div className="online"><Radio size={12} /> SYSTEM ONLINE</div>
-        <a href="mailto:sunchenxi@wuqiai.cn">建立连接 <Mail size={15} /></a>
+        <button ref={connectButtonRef} className="connect-trigger" type="button" onClick={() => setConnectOpen(true)} aria-label="建立连接">建立连接 <Mail size={15} /></button>
       </header>
 
       <section className={`identity-story ${!seated ? "identity-intro" : active === "about" ? "identity-left profile-identity" : "identity-dock"}`}>
@@ -215,7 +289,7 @@ export default function Home() {
           <p><Sparkles size={13} /> LEVERAGE AI PRODUCT MANAGER</p>
           <h1>杠杆型 AI 产品经理</h1>
           <h3>把模型能力，转化为真实的产品价值。</h3>
-          <span>3 年头部大厂（阿里巴巴 + 字节跳动 + 智谱）AI 产品经历，覆盖 C 端 AI 应用与底层大模型两端。关注 AI 技术与业务之间的连接，用刚好够用的方案推动产品高效落地。</span>
+          <span>3 年头部大厂（阿里巴巴 + 字节跳动 + 智谱）AI 产品经历，覆盖 C 端 AI 应用与底层大模型两端。擅长用刚好够用的技术方案，以更低的复杂度和成本推动 AI 产品高效落地。</span>
           <div><b>阿里巴巴</b><b>字节跳动</b><b>智谱</b></div>
         </> : active === "about" ? <>
           <Mascot className="profile-mascot" />
@@ -240,9 +314,9 @@ export default function Home() {
         <p className="panel-eyebrow">01 / PROFILE</p><h2>从理解模型，<br />到推动产品落地</h2>
         <h3 className="panel-subhead">用刚好够用的技术方案，以更低的复杂度和成本创造可验证的业务价值。</h3>
         <p>我先后在智谱、字节跳动与阿里巴巴参与 AI 产品实践，工作覆盖底层模型数据、生成式 AI 产品与 C 端 AI 应用落地。</p>
-        <div className="experience-block"><b>阿里巴巴集团</b><small>2025.07–2026.06 · 初级产品经理</small><p>淘天 AI 购物助手“购物车商品 AI 对比推荐”覆盖全品类、按品类分工。我作为 3C 品类产品负责人，向高级 PM 汇报，完整负责 3C 这条线从需求、方案、AI 能力落地到上线的产品工作。</p></div>
-        <div className="experience-block"><b>字节跳动</b><small>2024.05–2025.04 · AI 产品实习生</small><p>参与 Seedream 文生图产品的数据构建与效果迭代，聚焦图文对齐、生成美感、效果评测与竞品 benchmark。</p></div>
-        <div className="experience-block"><b>北京智谱华章</b><small>2023.06–2024.05 · AI 数据实习生</small><p>参与 AgentTuning 数据工程与模型效果验证，围绕 ReAct、CoT、held-out 评测与 TGI 推理链路建立可复用闭环。</p></div>
+        <div className="experience-block"><b>阿里巴巴 · 淘天集团</b><small>2025.07–2026.06 · AI 产品经理</small><p>负责淘天 AI 购物助手“购物车商品 AI 对比推荐”的 3C 品类，完整推进需求、方案、AI 能力落地到上线；对比后下单转化率提升 5.7%。</p></div>
+        <div className="experience-block"><b>北京字节跳动科技有限公司</b><small>2024.06–2025.05 · AI 产品实习生</small><p>参与 Seedream 系列文生图模型的数据构建与效果迭代，聚焦图文对齐、生成美感、效果评测与竞品 benchmark。</p></div>
+        <div className="experience-block"><b>北京智谱华章科技股份有限公司</b><small>2023.05–2024.04 · AI 产品实习生</small><p>参与 AgentTuning 数据工程与模型效果验证，围绕 ReAct、CoT、held-out 评测与 TGI 推理链路建立可复用闭环。</p></div>
         <blockquote>AI 产品的价值不在于使用了多少复杂技术，而在于能否以合理的成本，稳定地解决真实问题。</blockquote>
         <a className="primary-action" href={siteAssets.resumePdf} download>下载我的简历 <ArrowRight size={16} /></a>
       </section>}
@@ -262,8 +336,21 @@ export default function Home() {
 
       {seated && active === "contact" && <section className="method-contact-layout glass-panel">
         <div><p className="panel-eyebrow">04 / METHODOLOGY</p><h2>最小充分 AI</h2><h3 className="panel-subhead">从“值不值得”出发，只为可验证的价值增加技术复杂度。</h3><ol className="method-steps"><li>从真实业务问题和用户决策链路出发</li><li>能用规则层解决的问题，不交给模型猜测</li><li>通过结构化入参与 Prompt 约束提高稳定性</li><li>使用结构化解析与 guardrail 管理异常</li><li>通过离线评测集验证效果</li><li>通过 badcase 收集、归因和反馈形成迭代闭环</li><li>同时评估业务价值、实现复杂度、成本与稳定性</li></ol></div>
-        <div className="contact-side"><p className="secondary-eyebrow"><Sparkles size={12} /> LEVERAGE AI PRODUCT MANAGER</p><h2>与我联系</h2><h3 className="panel-subhead">期待一起做真正落地的 AI 产品。</h3><p>我正在关注 AI 产品经理、AI 解决方案及大模型应用相关机会，也欢迎交流 AI 产品、技术落地与行业趋势。</p><dl><dt>姓名</dt><dd>孙晨曦</dd><dt>邮箱</dt><dd>sunchenxi@wuqiai.cn</dd><dt>电话</dt><dd>193 5052 4359</dd><dt>当前状态</dt><dd>离职—随时到岗</dd></dl><div className="wechat-contact"><div className="wechat-qr">{!qrMissing && <img src={siteAssets.wechatQr} alt="雾崎的微信二维码" onError={() => setQrMissing(true)} />}{qrMissing && <span>微信二维码<br />上传至指定位置后显示</span>}</div><p><b>微信</b><br />扫描二维码添加好友</p></div><div className="panel-actions"><a href="mailto:sunchenxi@wuqiai.cn">发送邮件</a><a href={siteAssets.resumePdf} download>下载简历</a></div><small>在实践中验证，在写作中形成判断。 © 2026 孙晨曦（雾崎）</small></div>
+        <div className="contact-side"><p className="secondary-eyebrow"><Sparkles size={12} /> LEVERAGE AI PRODUCT MANAGER</p><h2>与我联系</h2><h3 className="panel-subhead">期待一起做真正落地的 AI 产品。</h3><p>我正在关注 AI 产品经理、AI 解决方案及大模型应用相关机会，也欢迎交流 AI 产品、技术落地与行业趋势。</p><dl><CopyableField label="姓名" value={contactDetails.name} /><CopyableField label="邮箱" value={contactDetails.email} /><CopyableField label="电话" value={contactDetails.phone} /><CopyableField label="当前状态" value={contactDetails.status} /></dl><div className="contact-qr-row"><div className="wechat-qr">{!qrMissing && <img src={siteAssets.wechatQr} alt="孙晨曦的微信二维码" onError={() => setQrMissing(true)} />}{qrMissing && <span>微信二维码<br />暂时无法显示</span>}</div><p><b>微信</b><br />{WECHAT_ID}<br /><small>扫码添加好友</small></p><a className="resume-download" href={siteAssets.resumePdf} download="孙晨曦-AI产品经理-简历.pdf"><Download size={16} />下载简历</a></div><small>在实践中验证，在写作中形成判断。 © 2026 孙晨曦（雾崎）</small></div>
       </section>}
+
+      <div className={`connect-modal ${connectOpen ? "is-open" : ""}`} aria-hidden={!connectOpen} onMouseDown={(event) => { if (event.target === event.currentTarget) closeConnect(); }}>
+        <div className="connect-card" role="dialog" aria-modal="true" aria-labelledby="connect-title" ref={connectDialogRef}>
+          <button className="connect-close" type="button" onClick={closeConnect} aria-label="关闭建立连接弹窗" ref={connectCloseRef}><X size={18} /></button>
+          <p className="panel-eyebrow">CONNECT / 建立连接</p>
+          <h2 id="connect-title">期待与你聊聊</h2>
+          <p className="connect-lead">AI 产品、大模型应用与业务落地，都欢迎联系。</p>
+          <div className="connect-content">
+            <div className="connect-fields"><dl><CopyableField label="邮箱" value={contactDetails.email} /><CopyableField label="电话" value={contactDetails.phone} /><CopyableField label="微信号" value={WECHAT_ID} /></dl><a className="resume-download" href={siteAssets.resumePdf} download="孙晨曦-AI产品经理-简历.pdf"><Download size={16} />下载最新简历</a></div>
+            <div className="connect-qr"><div className="wechat-qr">{!qrMissing && <img src={siteAssets.wechatQr} alt="孙晨曦的微信二维码" onError={() => setQrMissing(true)} />}{qrMissing && <span>微信二维码<br />暂时无法显示</span>}</div><b>{WECHAT_ID}</b><span>微信扫码或复制微信号</span></div>
+          </div>
+        </div>
+      </div>
 
       <div className="chair-loader" aria-live="polite">
         <div className="chair-orbit"><i /><Armchair size={36} /></div>

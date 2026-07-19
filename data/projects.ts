@@ -32,8 +32,8 @@ export const projects: ProjectContent[] = [
     resultsTitle: "关键成果 · 3C 板块 · 对照实验",
     metrics: [
       { value: "+4.5%", label: "3C 板块入口点击率" },
-      { value: "80%", label: "3C 板块 AI 对比生成成功率" },
-      { value: "+11.5%", label: "3C 板块对比后下单转化率" },
+      { value: "98%", label: "3C 板块 AI 对比生成成功率" },
+      { value: "+5.7%", label: "3C 板块对比后下单转化率" },
       { value: "−25%", label: "3C 板块用户决策时长" },
     ],
     results: ["搭建线上 badcase 收集 → 归因 → 评测 → 反馈闭环", "对比模块覆盖全品类、按品类分工；完整负责 3C 线产品工作"],
@@ -42,7 +42,7 @@ export const projects: ProjectContent[] = [
   {
     id: "seedream",
     tab: "02 Seedream",
-    eyebrow: "BYTEDANCE · 2024.05–2025.04",
+    eyebrow: "BYTEDANCE · 2024.06–2025.05",
     role: "AI 产品实习生",
     title: "Seedream 数据构建与效果迭代",
     position: "Seedream 系列文生图",
@@ -59,7 +59,7 @@ export const projects: ProjectContent[] = [
   {
     id: "agent-tuning",
     tab: "03 AgentTuning",
-    eyebrow: "ZHIPU · 2023.06–2024.05",
+    eyebrow: "ZHIPU · 2023.05–2024.04",
     role: "AI 数据实习生",
     title: "AgentTuning 数据与评测流水线",
     position: "AgentInstruct · Held-out Evaluation",
