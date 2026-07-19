@@ -328,10 +328,14 @@ export default function Home() {
       </section>}
 
       {seated && active === "projects" && <section className="project-layout glass-panel">
-        <div className="project-belief"><p className="panel-eyebrow">03 / PROJECT</p><h2>Demo 证明能力，<br />落地验证价值。</h2><h3 className="panel-subhead">从“值不值得”出发，用可控成本解决真实问题。</h3><div className="project-tabs">{projects.map((item) => <button key={item.id} className={projectView === item.id ? "active" : ""} onClick={() => setProjectView(item.id)}>{item.tab}</button>)}</div></div>
-        <div className="project-name"><div className="project-meta"><span>{project.eyebrow}</span><b>{project.role}</b></div><h2>{project.title}</h2><dl><dt>我的角色</dt><dd>{project.position}</dd><dt>项目状态</dt><dd>{project.status}</dd></dl></div>
-        <div className="project-summary"><h3 className="section-label">项目范围 / 我的工作</h3>{project.sections.map((section) => <section className="project-work" key={section.title}><h4>{section.title}</h4><ul>{section.items.map((item) => <li key={item}>{item}</li>)}</ul></section>)}</div>
-        <div className="project-details"><h3 className="section-label">{project.resultsTitle}</h3>{project.metrics && <div className="metric-grid">{project.metrics.map((metric) => <b key={metric.label}><strong>{metric.value}</strong>{metric.label}</b>)}</div>}<ul className="project-results">{project.results.map((item) => <li key={item}>{item}</li>)}</ul><blockquote>{project.quote}</blockquote></div>
+        <header className="project-header">
+          <div className="project-belief"><div className="project-kicker"><p className="panel-eyebrow">03 / PROJECT</p><h2>Demo 证明能力，落地验证价值。</h2></div><h3 className="panel-subhead">从“值不值得”出发，用可控成本解决真实问题。</h3><div className="project-tabs">{projects.map((item) => <button key={item.id} className={projectView === item.id ? "active" : ""} onClick={() => setProjectView(item.id)}>{item.tab}</button>)}</div></div>
+          <div className="project-name"><div className="project-meta"><span>{project.eyebrow}</span><b>{project.role}</b></div><h2>{project.title}</h2><dl><dt>我的角色</dt><dd>{project.position}</dd><dt>项目状态</dt><dd>{project.status}</dd></dl></div>
+        </header>
+        <div className="project-body">
+          <div className="project-summary"><h3 className="section-label">项目范围 / 我的工作</h3>{project.sections.map((section) => <section className="project-work" key={section.title}><h4>{section.title}</h4><ul>{section.items.map((item) => <li key={item}>{item}</li>)}</ul></section>)}</div>
+          <div className="project-details"><h3 className="section-label">{project.resultsTitle}</h3>{project.metrics && <div className="metric-grid">{project.metrics.map((metric) => <b key={metric.label}><strong>{metric.value}</strong>{metric.label}</b>)}</div>}<ul className="project-results">{project.results.map((item) => <li key={item}>{item}</li>)}</ul><blockquote>{project.quote}</blockquote></div>
+        </div>
       </section>}
 
       {seated && active === "contact" && <section className="method-contact-layout glass-panel">

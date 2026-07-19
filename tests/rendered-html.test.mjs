@@ -50,6 +50,11 @@ test("keeps the 0717 resume claims, assets and project data wired", async () => 
   assert.match(projectData, /3C 品类产品负责人/);
   assert.match(page, /Seedream/);
   assert.match(page, /AgentTuning/);
+  assert.match(page, /className="project-header"/);
+  assert.match(page, /className="project-body"/);
+  assert.match(styles, /\.project-header\{display:grid/);
+  assert.match(styles, /grid-template-columns:minmax\(0,1\.15fr\) minmax\(0,\.85fr\)/);
+  assert.match(styles, /\.project-layout \.project-summary\{display:flex/);
   assert.match(projectData, /关键成果 · 3C 板块 · 对照实验/);
   assert.match(projectData, /\+4\.5%/);
   assert.match(projectData, /\+5\.7%/);
